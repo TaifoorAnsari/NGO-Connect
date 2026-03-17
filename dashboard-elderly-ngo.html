@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elderly Care NGO Dashboard - NGO-Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background: #F8F9FA; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Syne', sans-serif; }
+        .sidebar { background: linear-gradient(135deg, #2D3142 0%, #1A1D2E 100%); }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link.active { background: rgba(255,255,255,0.15); }
+        .sidebar-link:hover { background: rgba(255,255,255,0.1); }
+        .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+        .form-input { transition: all 0.3s ease; border: 2px solid #E5E7EB; }
+        .form-input:focus { outline: none; border-color: #F5A962; box-shadow: 0 0 0 4px rgba(245,169,98,0.15); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <aside class="sidebar w-64 text-white flex flex-col flex-shrink-0">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">N</span>
+                </div>
+                <h1 class="text-xl font-bold">NGO-Connect</h1>
+            </div>
+            <nav class="space-y-2">
+                <a href="#" onclick="switchSection('dashboard')" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="dashboard">
+                    <span>📊</span><span class="font-semibold">Dashboard</span>
+                </a>
+                <a href="#" onclick="switchSection('donations')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="donations">
+                    <span>💝</span><span>Donations</span>
+                </a>
+                <a href="#" onclick="switchSection('facilities')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="facilities">
+                    <span>🏠</span><span>Facilities</span>
+                </a>
+                <a href="#" onclick="switchSection('team')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="team">
+                    <span>👥</span><span>Team</span>
+                </a>
+                <a href="#" onclick="switchSection('trust')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="trust">
+                    <span>🛡️</span><span>Reputation</span>
+                </a>
+                <a href="#" onclick="switchSection('settings')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="settings">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+        <div class="mt-auto p-6">
+            <div class="bg-white/10 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-1" id="sidebarNgoName">Elderly Care NGO</p>
+                <p class="text-xs text-gray-300">Elderly Care</p>
+            </div>
+            <button onclick="logout()" class="w-full text-left text-sm text-gray-400 hover:text-white transition px-2">🚪 Logout</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto">
+        <header class="bg-white border-b border-gray-200 px-8 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900" id="sectionTitle">Dashboard</h2>
+                    <p class="text-gray-600" id="sectionSubtitle">Overview of your elderly care facility</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full"></div>
+                    <span class="font-semibold" id="headerNgoName">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <div id="section-dashboard" class="section-panel active">
+            <section class="px-8 py-6">
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <span class="text-gray-600">Total Beds</span>
+                        <p class="text-3xl font-bold text-gray-900 mt-2" id="statBeds">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-gray-600">Available</span>
+                        <p class="text-3xl font-bold text-green-600 mt-2" id="statAvail">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-gray-600">Occupied</span>
+                        <p class="text-3xl font-bold text-blue-600 mt-2" id="statOccupied">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-gray-600">Donations (₹)</span>
+                        <p class="text-3xl font-bold text-orange-600 mt-2" id="statDonations">0</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Donations -->
+        <div id="section-donations" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">💝 Donations Received</h3>
+                    <div id="donationsList" class="space-y-3"></div>
+                    <div id="noDonations" style="display:none" class="text-center py-12 text-gray-500">No donations yet.</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Facilities -->
+        <div id="section-facilities" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm max-w-2xl">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">🏠 Facility Details</h3>
+                    <form onsubmit="saveFacilities(event)">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Total Beds</label>
+                                <input type="number" id="facBeds" class="form-input w-full px-4 py-3 rounded-xl" min="0">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-1">Occupied Beds</label>
+                                <input type="number" id="facOccupied" class="form-input w-full px-4 py-3 rounded-xl" min="0">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-semibold mb-2">Facilities Available</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center gap-2"><input type="checkbox" id="facKitchen" class="w-4 h-4"> 🍳 Kitchen</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="facMedical" class="w-4 h-4"> 🏥 Medical Room</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="facGarden" class="w-4 h-4"> 🌿 Garden</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="facLibrary" class="w-4 h-4"> 📚 Library</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" id="facRecreation" class="w-4 h-4"> 🎮 Recreation</label>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-semibold mb-1">Special Care Notes</label>
+                            <textarea id="facSpecial" class="form-input w-full px-4 py-3 rounded-xl" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="bg-gradient-to-r from-orange-400 to-yellow-400 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition">
+                            Save Facilities ✅
+                        </button>
+                        <span id="facSaved" class="ml-4 text-green-600 font-semibold" style="display:none">Saved!</span>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <!-- Team -->
+        <div id="section-team" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">👥 Team Members</h3>
+                        <button onclick="addTeamPrompt()" class="px-6 py-2.5 bg-gradient-to-r from-orange-400 to-yellow-400 text-white rounded-lg font-semibold hover:shadow-lg transition">+ Add Member</button>
+                    </div>
+                    <div id="teamList" class="space-y-3"></div>
+                    <div id="noTeam" style="display:none" class="text-center py-12 text-gray-500">No team members added.</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Trust & Reputation -->
+        <div id="section-trust" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">AI Trust Score</h3>
+                        <div class="relative w-32 h-32 flex items-center justify-center mb-4">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                                <path id="trustScoreCircle" class="text-green-500 transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="trustScoreValue" class="text-3xl font-extrabold text-gray-900">0</span>
+                                <span class="text-xs text-gray-500">/ 100</span>
+                            </div>
+                        </div>
+                        <div id="trustBadge" class="px-4 py-2 rounded-full border text-sm font-bold">
+                            Loading...
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">How your score is calculated</h3>
+                        <ul class="space-y-4">
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">1</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Action & Responsiveness (Max 20 pts)</p>
+                                    <p class="text-gray-600 text-xs">Active participation boosts your score.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">2</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Community Ratings (Max 20 pts)</p>
+                                    <p class="text-gray-600 text-xs">Maintaining high star ratings directly improves trust.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">3</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Profile Completeness (Max 10 pts)</p>
+                                    <p class="text-gray-600 text-xs">An accurate description and location adds points.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Recent Community Reviews (<span id="reviewCount">0</span>)</h3>
+                    <div id="reviewsList" class="space-y-4"></div>
+                    <div id="noReviews" style="display:none" class="text-center py-8">
+                        <p class="text-4xl mb-3">⭐</p>
+                        <p class="text-gray-600">No reviews yet.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Settings -->
+        <div id="section-settings" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm max-w-2xl">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">⚙️ Settings</h3>
+                    <form onsubmit="saveSettings(event)">
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Name</label>
+                            <input type="text" id="settingsName" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Description</label>
+                            <textarea id="settingsDesc" rows="3" class="form-input w-full px-4 py-3 rounded-xl"></textarea>
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Contact</label>
+                            <input type="tel" id="settingsPhone" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Address</label>
+                            <input type="text" id="settingsAddress" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <button type="submit" class="bg-gradient-to-r from-orange-400 to-yellow-400 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition">Save ✅</button>
+                        <span id="settingsSaved" class="ml-4 text-green-600 font-semibold" style="display:none">Saved!</span>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const ngoId = localStorage.getItem('ngoId');
+        const ngoName = localStorage.getItem('ngoName') || 'Elderly Care NGO';
+        if (!ngoId) window.location.href = 'index.html';
+
+        document.getElementById('sidebarNgoName').textContent = ngoName;
+        document.getElementById('headerNgoName').textContent = ngoName;
+
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        function switchSection(section) {
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`section-${section}`).classList.add('active');
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`.sidebar-link[data-section="${section}"]`).classList.add('active');
+            const titles = {
+                dashboard: ['Dashboard', 'Overview of your facility'],
+                donations: ['Donations', 'View donations received'],
+                facilities: ['Facilities', 'Update your facility details'],
+                team: ['Team', 'Manage team members'],
+                trust: ['Trust & Reputation', 'View your AI score and reviews'],
+                settings: ['Settings', 'Update organization profile']
+            };
+            document.getElementById('sectionTitle').textContent = titles[section][0];
+            document.getElementById('sectionSubtitle').textContent = titles[section][1];
+            if (section === 'donations') loadDonations();
+            if (section === 'team') loadTeam();
+            if (section === 'settings') loadSettings();
+            if (section === 'facilities') loadFacilities();
+            if (section === 'trust') loadTrustData();
+        }
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                const data = await res.json();
+                if (data.ngo) {
+                    const f = data.ngo.facilities || {};
+                    document.getElementById('statBeds').textContent = f.beds || 0;
+                    document.getElementById('statAvail').textContent = (f.beds || 0) - (f.occupiedBeds || 0);
+                    document.getElementById('statOccupied').textContent = f.occupiedBeds || 0;
+                    document.getElementById('statDonations').textContent = data.ngo.stats?.donationsReceived || 0;
+                }
+            } catch(err) { console.error(err); }
+        }
+
+        async function loadDonations() {
+            try {
+                const res = await fetch(`${API_BASE}/api/donations?ngoId=${ngoId}`);
+                const data = await res.json();
+                const container = document.getElementById('donationsList');
+                if (!data.donations || data.donations.length === 0) {
+                    container.innerHTML = '';
+                    document.getElementById('noDonations').style.display = 'block';
+                    return;
+                }
+                document.getElementById('noDonations').style.display = 'none';
+                container.innerHTML = data.donations.map(d => `
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-gray-900">${d.donorName}</p>
+                            <p class="text-sm text-gray-500">${d.purpose} · ${new Date(d.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <p class="text-xl font-bold text-orange-600">₹${d.amount}</p>
+                    </div>
+                `).join('');
+            } catch(err) { console.error(err); }
+        }
+
+        async function loadFacilities() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                const data = await res.json();
+                if (data.ngo && data.ngo.facilities) {
+                    const f = data.ngo.facilities;
+                    document.getElementById('facBeds').value = f.beds || 0;
+                    document.getElementById('facOccupied').value = f.occupiedBeds || 0;
+                    document.getElementById('facKitchen').checked = f.hasKitchen || false;
+                    document.getElementById('facMedical').checked = f.hasMedicalRoom || false;
+                    document.getElementById('facGarden').checked = f.hasGarden || false;
+                    document.getElementById('facLibrary').checked = f.hasLibrary || false;
+                    document.getElementById('facRecreation').checked = f.hasRecreation || false;
+                    document.getElementById('facSpecial').value = f.specialCare || '';
+                }
+            } catch(err) { console.error(err); }
+        }
+
+        async function saveFacilities(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/settings`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        facilities: {
+                            beds: parseInt(document.getElementById('facBeds').value),
+                            occupiedBeds: parseInt(document.getElementById('facOccupied').value),
+                            hasKitchen: document.getElementById('facKitchen').checked,
+                            hasMedicalRoom: document.getElementById('facMedical').checked,
+                            hasGarden: document.getElementById('facGarden').checked,
+                            hasLibrary: document.getElementById('facLibrary').checked,
+                            hasRecreation: document.getElementById('facRecreation').checked,
+                            specialCare: document.getElementById('facSpecial').value
+                        }
+                    })
+                });
+                if (res.ok) {
+                    document.getElementById('facSaved').style.display = 'inline';
+                    setTimeout(() => document.getElementById('facSaved').style.display = 'none', 3000);
+                    loadDashboard();
+                }
+            } catch(err) { alert('Failed to save'); }
+        }
+
+        async function loadTeam() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/team`);
+                const data = await res.json();
+                const container = document.getElementById('teamList');
+                if (!data.team || data.team.length === 0) {
+                    container.innerHTML = '';
+                    document.getElementById('noTeam').style.display = 'block';
+                    return;
+                }
+                document.getElementById('noTeam').style.display = 'none';
+                container.innerHTML = data.team.map(m => `
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full flex items-center justify-center text-white font-bold">${m.name.charAt(0)}</div>
+                            <div>
+                                <p class="font-bold text-gray-900">${m.name}</p>
+                                <p class="text-sm text-gray-500">${m.role}</p>
+                            </div>
+                        </div>
+                        <button onclick="removeMember('${m.memberId}')" class="text-red-400 hover:text-red-600 text-sm">Remove</button>
+                    </div>
+                `).join('');
+            } catch(err) { console.error(err); }
+        }
+
+        async function addTeamPrompt() {
+            const name = prompt('Member name:');
+            if (!name) return;
+            const role = prompt('Role:') || 'Staff';
+            try {
+                await fetch(`${API_BASE}/api/ngos/${ngoId}/team`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, role })
+                });
+                loadTeam();
+            } catch(err) { alert('Failed'); }
+        }
+
+        async function removeMember(memberId) {
+            if (!confirm('Remove?')) return;
+            await fetch(`${API_BASE}/api/ngos/${ngoId}/team/${memberId}`, { method: 'DELETE' });
+            loadTeam();
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                const data = await res.json();
+                if (data.ngo) {
+                    document.getElementById('settingsName').value = data.ngo.name || '';
+                    document.getElementById('settingsDesc').value = data.ngo.description || '';
+                    document.getElementById('settingsPhone').value = data.ngo.contactNumber || '';
+                    document.getElementById('settingsAddress').value = data.ngo.location?.address || '';
+                }
+            } catch(err) {}
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/settings`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('settingsName').value,
+                        description: document.getElementById('settingsDesc').value,
+                        contactNumber: document.getElementById('settingsPhone').value,
+                        'location.address': document.getElementById('settingsAddress').value
+                    })
+                });
+                if (res.ok) {
+                    const s = document.getElementById('settingsSaved');
+                    s.style.display = 'inline';
+                    setTimeout(() => s.style.display = 'none', 3000);
+                    localStorage.setItem('ngoName', document.getElementById('settingsName').value);
+                    document.getElementById('sidebarNgoName').textContent = document.getElementById('settingsName').value;
+                    document.getElementById('headerNgoName').textContent = document.getElementById('settingsName').value;
+                }
+            } catch(err) { alert('Failed'); }
+        }
+
+        // Load Trust & Reputation Data
+        async function loadTrustData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                if (!res.ok) throw new Error('Failed to fetch NGO data');
+                const data = await res.json();
+                
+                const score = data.ngo.aiTrustScore || 50;
+                document.getElementById('trustScoreValue').textContent = score;
+                const circle = document.getElementById('trustScoreCircle');
+                const circumference = 2 * Math.PI * 16;
+                circle.style.strokeDasharray = `${(score / 100) * circumference}, ${circumference}`;
+
+                const badge = document.getElementById('trustBadge');
+                if (data.ngo.verificationStatus === 'verified') {
+                    badge.className = 'px-4 py-2 rounded-full border bg-green-100 text-green-800 border-green-200 font-bold';
+                    badge.innerHTML = '🟢 Verified Organization';
+                    circle.classList.add('text-green-500');
+                    circle.classList.remove('text-yellow-500', 'text-red-500');
+                } else if (data.ngo.verificationStatus === 'suspicious') {
+                    badge.className = 'px-4 py-2 rounded-full border bg-red-100 text-red-800 border-red-200 font-bold';
+                    badge.innerHTML = '🔴 Suspicious';
+                    circle.classList.add('text-red-500');
+                    circle.classList.remove('text-green-500', 'text-yellow-500');
+                } else {
+                    badge.className = 'px-4 py-2 rounded-full border bg-yellow-100 text-yellow-800 border-yellow-200 font-bold';
+                    badge.innerHTML = '🟡 Caution (Unverified)';
+                    circle.classList.add('text-yellow-500');
+                    circle.classList.remove('text-green-500', 'text-red-500');
+                }
+
+                const ratings = data.ngo.ratings || [];
+                document.getElementById('reviewCount').textContent = ratings.length;
+                
+                const reviewsList = document.getElementById('reviewsList');
+                const noReviews = document.getElementById('noReviews');
+                
+                if (ratings.length === 0) {
+                    reviewsList.innerHTML = '';
+                    noReviews.style.display = 'block';
+                } else {
+                    noReviews.style.display = 'none';
+                    ratings.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    
+                    reviewsList.innerHTML = ratings.map(r => `
+                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="font-bold text-gray-900">${r.userName || 'User'}</p>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-yellow-400">⭐</span>
+                                    <span class="font-bold text-gray-700">${r.score}/5</span>
+                                </div>
+                            </div>
+                            ${r.review ? `<p class="text-sm text-gray-600 mt-2 italic">"${r.review}"</p>` : ''}
+                            <p class="text-xs text-gray-400 mt-2">${new Date(r.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            loadTrustData();
+        });
+    </script>
+</body>
+</html>

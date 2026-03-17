@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - NGO-Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #D94A2B;
+            --primary-dark: #B23820;
+            --secondary: #F5A962;
+            --accent: #4ECDC4;
+            --dark: #2D3142;
+            --light: #FFF8F3;
+            --success: #52B788;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
+
+        .bg-blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(217, 74, 43, 0.1) 0%, transparent 70%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: morphBlob 20s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-blob-1 { top: -200px; right: -200px; }
+        .bg-blob-2 {
+            bottom: -300px; left: -300px;
+            animation-delay: -10s;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.08) 0%, transparent 70%);
+        }
+
+        @keyframes morphBlob {
+            0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(0deg) scale(1); }
+            50% { border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%; transform: rotate(180deg) scale(0.9); }
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(217, 74, 43, 0.15);
+        }
+
+        .adopt-card {
+            transition: all 0.3s ease;
+        }
+        .adopt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-assigned { background: #D1FAE5; color: #065F46; }
+        .status-in-progress { background: #DBEAFE; color: #1E40AF; }
+        .status-completed { background: #E0E7FF; color: #3730A3; }
+
+        /* Tracker stepper styles */
+        .tracker-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+        }
+        .tracker-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            z-index: 2;
+            border: 3px solid #E5E7EB;
+            background: white;
+            color: #9CA3AF;
+            transition: all 0.4s ease;
+        }
+        .tracker-dot.done {
+            background: #059669;
+            border-color: #059669;
+            color: white;
+        }
+        .tracker-dot.active {
+            background: white;
+            border-color: #D94A2B;
+            color: #D94A2B;
+            box-shadow: 0 0 0 6px rgba(217,74,43,0.15);
+            animation: pulseActive 2s ease-in-out infinite;
+        }
+        @keyframes pulseActive {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(217,74,43,0.1); }
+            50% { box-shadow: 0 0 0 10px rgba(217,74,43,0.2); }
+        }
+        .tracker-line {
+            position: absolute;
+            top: 18px;
+            left: calc(50% + 18px);
+            right: calc(-50% + 18px);
+            height: 4px;
+            background: #E5E7EB;
+            z-index: 1;
+            border-radius: 2px;
+        }
+        .tracker-line.done {
+            background: #059669;
+        }
+        .tracker-label {
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9CA3AF;
+            text-align: center;
+        }
+        .tracker-label.done { color: #059669; }
+        .tracker-label.active { color: #D94A2B; }
+
+        .report-card {
+            transition: all 0.3s ease;
+        }
+        .report-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .report-detail-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.6s ease forwards; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(45, 49, 66, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 bg-white/80 backdrop-blur-md shadow-sm">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">N</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">NGO-Connect</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#causes" class="text-gray-700 hover:text-red-600 transition font-medium">Our Causes</a>
+                    <a href="#adoption" class="text-gray-700 hover:text-red-600 transition font-medium">Adopt</a>
+                    <a href="#reports" class="text-gray-700 hover:text-red-600 transition font-medium">Track Reports</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-9 h-9 bg-gradient-to-br from-red-500 to-orange-400 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-sm" id="userAvatar">U</span>
+                        </div>
+                        <span class="font-semibold text-gray-800" id="userName">User</span>
+                    </div>
+                    <button onclick="logout()" class="text-gray-500 hover:text-red-600 transition text-sm font-medium">Logout</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Welcome Section -->
+    <section class="relative z-10 pt-10 pb-6 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="animate-in">
+                <h2 class="text-4xl font-bold text-gray-900 mb-2">Welcome back, <span id="welcomeName" class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">User</span>!</h2>
+                <p class="text-lg text-gray-600">Make a difference today — explore causes, adopt animals, or report emergencies.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="relative z-10 pb-8 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="window.location.href='index.html'" class="bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg flex items-center justify-center gap-3">
+                    🆘 Report Emergency
+                </button>
+                <a href="#adoption" class="bg-white border-2 border-orange-300 text-orange-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-orange-500 hover:bg-orange-50 transition shadow-sm flex items-center justify-center gap-3">
+                    🐾 Adopt a Pet
+                </a>
+                <a href="#reports" class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3">
+                    📋 Track Reports
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Causes Section -->
+    <section id="causes" class="relative z-10 py-12 px-6 bg-white/50">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-10">
+                <h3 class="text-4xl font-bold text-gray-900 mb-3">Our Causes</h3>
+                <p class="text-lg text-gray-600">Explore and support different NGO categories</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Animal Welfare -->
+                <a href="ngo-animal.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
+                    <div class="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-4xl">🐾</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Animal Welfare</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Rescue injured animals, adopt pets, and support animal shelters with your donations.
+                    </p>
+                    <span class="text-red-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
+
+                <!-- Elderly Care -->
+                <a href="ngo-elderly.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
+                    <div class="w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-4xl">🏡</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Elderly Care</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Support old age homes with donations. View beds, facilities, and contribute supplies.
+                    </p>
+                    <span class="text-orange-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
+
+                <!-- Education -->
+                <a href="ngo-education.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
+                    <div class="w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-4xl">📚</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Education</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Empower underprivileged children with education. Donate for books, tuition, and resources.
+                    </p>
+                    <span class="text-teal-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Adoption Section -->
+    <section id="adoption" class="relative z-10 py-12 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-10">
+                <h3 class="text-4xl font-bold text-gray-900 mb-3">🐾 Adopt a Pet</h3>
+                <p class="text-lg text-gray-600">Give a loving home to these adorable animals</p>
+            </div>
+
+            <!-- Filter -->
+            <div class="flex flex-wrap gap-3 mb-8 justify-center">
+                <button onclick="filterAnimals('')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition active">All</button>
+                <button onclick="filterAnimals('dog')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐕 Dogs</button>
+                <button onclick="filterAnimals('cat')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐱 Cats</button>
+                <button onclick="filterAnimals('bird')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐦 Birds</button>
+                <button onclick="filterAnimals('rabbit')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐰 Rabbits</button>
+            </div>
+
+            <div id="adoptionGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="col-span-full text-center py-12">
+                    <div class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin"></div>
+                    <p class="text-gray-600 mt-4">Loading available pets...</p>
+                </div>
+            </div>
+
+            <div id="noAnimals" style="display:none;" class="text-center py-12">
+                <p class="text-5xl mb-4">🐾</p>
+                <p class="text-xl font-semibold text-gray-900 mb-2">No animals available</p>
+                <p class="text-gray-600">Check back soon — NGOs are always rescuing new animals!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Reports Section - TRACKER -->
+    <section id="reports" class="relative z-10 py-12 px-6 bg-white/50">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-10">
+                <h3 class="text-4xl font-bold text-gray-900 mb-3">📋 Track Your Reports</h3>
+                <p class="text-lg text-gray-600">Follow every step — from reporting to resolution</p>
+            </div>
+
+            <!-- Report Stats Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100">
+                    <p class="text-2xl font-bold text-gray-900" id="statTotal">0</p>
+                    <p class="text-xs text-gray-500 font-semibold">Total Reports</p>
+                </div>
+                <div class="bg-yellow-50 rounded-2xl p-4 shadow-sm text-center border border-yellow-100">
+                    <p class="text-2xl font-bold text-yellow-700" id="statPending">0</p>
+                    <p class="text-xs text-yellow-600 font-semibold">Pending</p>
+                </div>
+                <div class="bg-blue-50 rounded-2xl p-4 shadow-sm text-center border border-blue-100">
+                    <p class="text-2xl font-bold text-blue-700" id="statWorking">0</p>
+                    <p class="text-xs text-blue-600 font-semibold">Under Work</p>
+                </div>
+                <div class="bg-green-50 rounded-2xl p-4 shadow-sm text-center border border-green-100">
+                    <p class="text-2xl font-bold text-green-700" id="statResolved">0</p>
+                    <p class="text-xs text-green-600 font-semibold">Resolved</p>
+                </div>
+            </div>
+
+            <div id="reportsContainer" class="space-y-6">
+                <div class="text-center py-12">
+                    <div class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin"></div>
+                    <p class="text-gray-600 mt-4">Loading your reports...</p>
+                </div>
+            </div>
+
+            <div id="noReports" style="display:none;" class="text-center py-12">
+                <p class="text-5xl mb-4">📭</p>
+                <p class="text-xl font-semibold text-gray-900 mb-2">No reports yet</p>
+                <p class="text-gray-600">When you report an injured animal, you can track its progress here.</p>
+                <a href="index.html" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
+                    Report an Emergency 🆘
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 bg-gray-900 text-white py-10 px-6">
+        <div class="container mx-auto max-w-6xl text-center">
+            <p class="text-gray-400">&copy; 2024 NGO-Connect. All rights reserved. Built with ❤️ for making a difference.</p>
+        </div>
+    </footer>
+
+    <!-- Adoption Detail Modal -->
+    <div id="adoptModal" class="modal">
+        <div class="modal-content">
+            <div class="p-8" id="adoptModalBody">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const userId = localStorage.getItem('userId');
+        const userNameStored = localStorage.getItem('userName');
+
+        // Redirect if not logged in
+        if (!userId) {
+            window.location.href = 'index.html';
+        }
+
+        // Set user info
+        document.getElementById('userName').textContent = userNameStored || 'User';
+        document.getElementById('welcomeName').textContent = userNameStored || 'User';
+        document.getElementById('userAvatar').textContent = (userNameStored || 'U').charAt(0).toUpperCase();
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // ========== ADOPTION ==========
+        let allAnimals = [];
+
+        async function loadAdoptionAnimals() {
+            try {
+                const res = await fetch(`${API_BASE}/api/adoptions`);
+                const data = await res.json();
+
+                allAnimals = data.animals || [];
+                renderAnimals(allAnimals);
+            } catch (err) {
+                console.error('Error loading animals:', err);
+                document.getElementById('adoptionGrid').innerHTML = '<p class="col-span-full text-center text-red-600">Failed to load animals. Check server.</p>';
+            }
+        }
+
+        function filterAnimals(species) {
+            const filtered = species ? allAnimals.filter(a => a.species === species) : allAnimals;
+            renderAnimals(filtered);
+
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('bg-red-500', 'text-white', 'border-red-500'));
+            event.target.classList.add('bg-red-500', 'text-white', 'border-red-500');
+        }
+
+        function renderAnimals(animals) {
+            const grid = document.getElementById('adoptionGrid');
+            const noAnimals = document.getElementById('noAnimals');
+
+            if (animals.length === 0) {
+                grid.innerHTML = '';
+                noAnimals.style.display = 'block';
+                return;
+            }
+
+            noAnimals.style.display = 'none';
+
+            grid.innerHTML = animals.map(animal => `
+                <div class="adopt-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
+                    <div class="h-48 overflow-hidden bg-gray-100">
+                        <img src="${API_BASE}${animal.photoUrl}" alt="${animal.name}"
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=${animal.species}'">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-lg font-bold text-gray-900">${animal.name}</h4>
+                            <span class="text-xs px-2 py-1 rounded-full ${animal.vaccinated ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                ${animal.vaccinated ? '💉 Vaccinated' : '⚠️ Not Vaccinated'}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-1">${animal.breed} · ${animal.age} · ${animal.gender}</p>
+                        <p class="text-sm text-gray-600 mb-3 line-clamp-2">${animal.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-400">By ${animal.listedByNGOName}</span>
+                            <button onclick="openAdoptModal('${animal.animalId}', '${animal.name}')"
+                                    class="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition">
+                                Adopt 🐾
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAdoptModal(animalId, name) {
+            const modal = document.getElementById('adoptModal');
+            document.getElementById('adoptModalBody').innerHTML = `
+                <div class="text-center">
+                    <p class="text-5xl mb-4">🐾</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Adopt ${name}?</h3>
+                    <p class="text-gray-600 mb-6">By confirming, you'll be registered as the adopter. The NGO will contact you for further procedures.</p>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="confirmAdopt('${animalId}')"
+                                class="px-8 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
+                            Yes, Adopt! ❤️
+                        </button>
+                        <button onclick="closeAdoptModal()"
+                                class="px-8 py-3 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        function closeAdoptModal() {
+            document.getElementById('adoptModal').classList.remove('active');
+        }
+
+        async function confirmAdopt(animalId) {
+            try {
+                const res = await fetch(`${API_BASE}/api/adoptions/${animalId}/adopt`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: localStorage.getItem('userId'),
+                        userName: localStorage.getItem('userName')
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    alert(data.error || 'Adoption failed');
+                    return;
+                }
+
+                document.getElementById('adoptModalBody').innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-5xl mb-4">🎉</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Adoption Successful!</h3>
+                        <p class="text-gray-600 mb-6">${data.message} The NGO will contact you soon.</p>
+                        <button onclick="closeAdoptModal(); loadAdoptionAnimals();"
+                                class="px-8 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition">
+                            Great! 🎊
+                        </button>
+                    </div>
+                `;
+            } catch (err) {
+                alert('Failed to process adoption. Check server.');
+            }
+        }
+
+        // ========== REPORT TRACKER ==========
+        // Status progression: pending → assigned → in-progress → completed
+        const TRACKING_STEPS = [
+            { key: 'pending',     icon: '📝', label: 'Reported',   desc: 'Your report has been submitted' },
+            { key: 'assigned',    icon: '✅', label: 'Accepted',   desc: 'An NGO has accepted your report' },
+            { key: 'in-progress', icon: '🔧', label: 'Under Work', desc: 'The NGO is working on rescue' },
+            { key: 'completed',   icon: '🎉', label: 'Resolved',   desc: 'The rescue is complete' }
+        ];
+
+        function getStepIndex(status) {
+            const idx = TRACKING_STEPS.findIndex(s => s.key === status);
+            return idx >= 0 ? idx : 0;
+        }
+
+        function buildTrackerHTML(report) {
+            const currentIdx = getStepIndex(report.status);
+            const isCancelled = report.status === 'cancelled';
+
+            const date = new Date(report.createdAt).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            const updatedDate = report.updatedAt ? new Date(report.updatedAt).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            }) : date;
+
+            // Status label for header
+            const statusLabels = {
+                'pending': { text: 'Pending', class: 'status-pending' },
+                'assigned': { text: 'Accepted', class: 'status-assigned' },
+                'in-progress': { text: 'Under Work', class: 'status-in-progress' },
+                'completed': { text: 'Resolved', class: 'status-completed' },
+                'cancelled': { text: 'Cancelled', class: 'status-pending' }
+            };
+            const statusInfo = statusLabels[report.status] || statusLabels.pending;
+
+            // Build stepper steps
+            const stepsHTML = TRACKING_STEPS.map((step, i) => {
+                let dotClass = '';
+                let labelClass = '';
+                let lineClass = '';
+
+                if (isCancelled) {
+                    dotClass = '';
+                } else if (i < currentIdx) {
+                    dotClass = 'done';
+                    labelClass = 'done';
+                    lineClass = 'done';
+                } else if (i === currentIdx) {
+                    dotClass = i === TRACKING_STEPS.length - 1 ? 'done' : 'active';
+                    labelClass = i === TRACKING_STEPS.length - 1 ? 'done' : 'active';
+                }
+
+                const lineHTML = i < TRACKING_STEPS.length - 1
+                    ? `<div class="tracker-line ${i < currentIdx ? 'done' : ''}"></div>`
+                    : '';
+
+                return `
+                    <div class="tracker-step">
+                        <div class="tracker-dot ${dotClass}">${step.icon}</div>
+                        <p class="tracker-label ${labelClass}">${step.label}</p>
+                        ${lineHTML}
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="report-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <!-- Header -->
+                    <div class="report-detail-toggle p-5 flex gap-4 items-start" onclick="toggleReportDetail('${report.reportId}')">
+                        <img src="${API_BASE}${report.photoUrl}" alt="Report"
+                             class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+                             onerror="this.src='https://via.placeholder.com/80?text=🐾'">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-bold text-gray-900 text-lg">Report #${report.reportId}</h4>
+                                <span class="status-badge ${statusInfo.class}">${statusInfo.text}</span>
+                            </div>
+                            <p class="text-gray-600 text-sm truncate">${report.description}</p>
+                            <p class="text-xs text-gray-400 mt-1">📍 ${report.location.address} · 🕐 ${date}</p>
+                        </div>
+                        <span class="text-gray-400 text-xl mt-2 flex-shrink-0 transition-transform" id="arrow-${report.reportId}">▼</span>
+                    </div>
+
+                    <!-- Expandable Detail with Tracker -->
+                    <div id="detail-${report.reportId}" style="display:none;" class="border-t border-gray-100">
+                        <!-- Visual Stepper -->
+                        <div class="px-6 py-6 bg-gray-50/50">
+                            <p class="text-sm font-bold text-gray-700 mb-5 text-center">📡 Tracking Progress</p>
+                            <div class="flex items-start justify-between px-2">
+                                ${stepsHTML}
+                            </div>
+                        </div>
+
+                        <!-- Current Status Detail -->
+                        <div class="px-6 py-4">
+                            ${!isCancelled ? `
+                            <div class="bg-gradient-to-r ${
+                                report.status === 'completed' ? 'from-green-50 to-emerald-50 border-green-200' :
+                                report.status === 'in-progress' ? 'from-blue-50 to-sky-50 border-blue-200' :
+                                report.status === 'assigned' ? 'from-teal-50 to-cyan-50 border-teal-200' :
+                                'from-yellow-50 to-amber-50 border-yellow-200'
+                            } rounded-xl p-4 border">
+                                <p class="text-sm font-bold ${
+                                    report.status === 'completed' ? 'text-green-800' :
+                                    report.status === 'in-progress' ? 'text-blue-800' :
+                                    report.status === 'assigned' ? 'text-teal-800' :
+                                    'text-yellow-800'
+                                } mb-1">${TRACKING_STEPS[currentIdx].icon} ${TRACKING_STEPS[currentIdx].desc}</p>
+                                ${report.assignedNGOName ? `<p class="text-sm text-gray-700">🏥 <strong>${report.assignedNGOName}</strong> is handling this report</p>` : ''}
+                                <p class="text-xs text-gray-500 mt-2">Last updated: ${updatedDate}</p>
+                            </div>` : `
+                            <div class="bg-red-50 rounded-xl p-4 border border-red-200">
+                                <p class="text-sm font-bold text-red-800">❌ This report has been cancelled</p>
+                            </div>`}
+                        </div>
+
+                        <!-- Report Details -->
+                        <div class="px-6 pb-5">
+                            <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <p class="text-gray-500 text-xs font-semibold">Animal Type</p>
+                                    <p class="font-bold text-gray-900">${report.animalType}</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <p class="text-gray-500 text-xs font-semibold">Priority</p>
+                                    <p class="font-bold text-gray-900">${report.priority || 'Medium'}</p>
+                                </div>
+                            </div>
+                            
+                            ${report.status === 'completed' && report.assignedNGO ? `
+                            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 mt-2">
+                                <p class="text-sm font-bold text-gray-800 mb-2">⭐ Rate your experience with ${report.assignedNGOName}</p>
+                                <div class="flex items-center gap-2 mb-3" id="rating-stars-${report.reportId}">
+                                    ${[1,2,3,4,5].map(star => `
+                                        <button onclick="setRating('${report.reportId}', ${star})" class="text-2xl text-gray-300 hover:text-yellow-400 focus:text-yellow-400 transition" id="star-${report.reportId}-${star}">★</button>
+                                    `).join('')}
+                                </div>
+                                <textarea id="review-${report.reportId}" rows="2" class="w-full text-sm p-2 border border-gray-300 rounded-lg mb-2" placeholder="Write a short review (optional)"></textarea>
+                                <input type="hidden" id="score-${report.reportId}" value="0">
+                                <button onclick="submitRating('${report.assignedNGO}', '${report.reportId}')" class="w-full bg-gray-900 text-white text-sm font-bold py-2 rounded-lg hover:bg-gray-800 transition">
+                                    Submit Rating
+                                </button>
+                                <p id="rating-success-${report.reportId}" class="text-green-600 font-bold text-sm text-center mt-2 hidden">✅ Rating Submitted!</p>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleReportDetail(reportId) {
+            const detail = document.getElementById(`detail-${reportId}`);
+            const arrow = document.getElementById(`arrow-${reportId}`);
+            if (detail.style.display === 'none') {
+                detail.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                detail.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        async function loadMyReports() {
+            try {
+                const res = await fetch(`${API_BASE}/api/users/${userId}/reports`);
+                const data = await res.json();
+
+                const container = document.getElementById('reportsContainer');
+                const noReports = document.getElementById('noReports');
+
+                if (!data.reports || data.reports.length === 0) {
+                    container.innerHTML = '';
+                    noReports.style.display = 'block';
+                    return;
+                }
+
+                noReports.style.display = 'none';
+
+                // Update stats
+                const reports = data.reports;
+                document.getElementById('statTotal').textContent = reports.length;
+                document.getElementById('statPending').textContent = reports.filter(r => r.status === 'pending').length;
+                document.getElementById('statWorking').textContent = reports.filter(r => r.status === 'assigned' || r.status === 'in-progress').length;
+                document.getElementById('statResolved').textContent = reports.filter(r => r.status === 'completed').length;
+
+                // Render each report with tracker
+                container.innerHTML = reports.map(report => buildTrackerHTML(report)).join('');
+
+                // Auto expand first report
+                if (reports.length > 0) {
+                    toggleReportDetail(reports[0].reportId);
+                }
+
+            } catch (err) {
+                console.error('Error loading reports:', err);
+                document.getElementById('reportsContainer').innerHTML = '<p class="text-center text-red-600">Failed to load reports.</p>';
+            }
+        }
+
+        // Click outside modal to close
+        window.onclick = function(e) {
+            if (e.target.id === 'adoptModal') closeAdoptModal();
+        }
+
+        // Ratings System
+        function setRating(reportId, score) {
+            document.getElementById(`score-${reportId}`).value = score;
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${reportId}-${i}`);
+                if (i <= score) {
+                    star.classList.add('text-yellow-400');
+                    star.classList.remove('text-gray-300');
+                } else {
+                    star.classList.add('text-gray-300');
+                    star.classList.remove('text-yellow-400');
+                }
+            }
+        }
+
+        async function submitRating(ngoId, reportId) {
+            const score = document.getElementById(`score-${reportId}`).value;
+            const review = document.getElementById(`review-${reportId}`).value;
+            
+            if (score == 0) {
+                alert('Please select a star rating first!');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/rate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: userId,
+                        userName: userName,
+                        score: score,
+                        review: review
+                    })
+                });
+
+                if (res.ok) {
+                    document.getElementById(`rating-success-${reportId}`).classList.remove('hidden');
+                    // Disable inputs after success
+                    document.getElementById(`review-${reportId}`).disabled = true;
+                    event.target.disabled = true;
+                    event.target.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    alert('Failed to submit rating.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Server error.');
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAdoptionAnimals();
+            loadMyReports();
+        });
+    </script>
+</body>
+
+</html>

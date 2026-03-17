@@ -514,59 +514,50 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Animal Welfare -->
-                <div
-                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200">
+                <a href="ngo-animal.html"
+                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
                     <div class="category-icon w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
                         <span class="text-4xl">🐾</span>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-900 mb-3">Animal Welfare</h4>
                     <p class="text-gray-600 mb-6 leading-relaxed">
-                        Instant rescue alerts for injured animals. Connect with specialized animal NGOs in your area for
-                        immediate response.
+                        Instant rescue alerts for injured animals. Adopt pets and support animal shelters.
                     </p>
-                    <button onclick="openReportModal()"
-                        class="text-red-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all">
-                        Report Emergency
-                        <span>→</span>
-                    </button>
-                </div>
+                    <span class="text-red-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
 
                 <!-- Elderly Care -->
-                <div
-                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200">
+                <a href="ngo-elderly.html"
+                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
                     <div
                         class="category-icon w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
                         <span class="text-4xl">🏡</span>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-900 mb-3">Elderly Care</h4>
                     <p class="text-gray-600 mb-6 leading-relaxed">
-                        Support old age homes with donations, supplies, and volunteer time. Make a senior citizen smile
-                        today.
+                        Support old age homes with donations. View beds, facilities, and contribute supplies.
                     </p>
-                    <button onclick="openAuthModal('ngo')"
-                        class="text-orange-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all">
-                        View Needs
-                        <span>→</span>
-                    </button>
-                </div>
+                    <span class="text-orange-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
 
                 <!-- Education -->
-                <div
-                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200">
+                <a href="ngo-education.html"
+                    class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
                     <div class="category-icon w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
                         <span class="text-4xl">📚</span>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-900 mb-3">Education</h4>
                     <p class="text-gray-600 mb-6 leading-relaxed">
-                        Empower underprivileged children with learning resources. Volunteer as a tutor or donate
-                        educational materials.
+                        Empower underprivileged children with education. Donate for books, tuition, and resources.
                     </p>
-                    <button onclick="openAuthModal('ngo')"
-                        class="text-teal-600 font-semibold flex items-center gap-2 hover:gap-3 transition-all">
-                        Get Involved
-                        <span>→</span>
-                    </button>
-                </div>
+                    <span class="text-teal-600 font-semibold flex items-center gap-2">
+                        Explore →
+                    </span>
+                </a>
             </div>
         </div>
     </section>
@@ -767,18 +758,30 @@
                         </select>
                     </div>
 
+                    <!-- Signup-only fields -->
+                    <div id="signupFields" style="display: none;">
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                            <input type="text" id="signupName" class="form-input w-full px-4 py-3 rounded-xl"
+                                placeholder="Your full name">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-semibold mb-2">Phone Number (for WhatsApp updates)</label>
+                            <input type="tel" id="signupPhone" class="form-input w-full px-4 py-3 rounded-xl"
+                                placeholder="+91XXXXXXXXXX">
+                        </div>
+                    </div>
+
                     <div class="mb-6">
                         <label class="block text-gray-700 font-semibold mb-2">Email</label>
                         <input type="email" id="email" class="form-input w-full px-4 py-3 rounded-xl"
                             placeholder="your@email.com" required>
-
                     </div>
 
                     <div class="mb-6">
                         <label class="block text-gray-700 font-semibold mb-2">Password</label>
                         <input type="password" id="password" class="form-input w-full px-4 py-3 rounded-xl"
                             placeholder="••••••••" required>
-
                     </div>
 
                     <button type="submit"

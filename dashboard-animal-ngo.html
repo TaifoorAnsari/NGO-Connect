@@ -17,39 +17,34 @@
             background: #F8F9FA;
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-family: 'Syne', sans-serif;
-        }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
 
         .sidebar {
             background: linear-gradient(135deg, #2D3142 0%, #1A1D2E 100%);
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+        .sidebar-link.active {
+            background: rgba(255,255,255,0.15);
+        }
+        .sidebar-link:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         .alert-card {
             transition: all 0.3s ease;
             animation: slideIn 0.5s ease;
         }
-
         .alert-card:hover {
             transform: translateX(5px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .stat-card {
@@ -66,55 +61,84 @@
             font-size: 12px;
             font-weight: 600;
         }
+        .badge-pending { background: #FEF3C7; color: #92400E; }
+        .badge-assigned { background: #D1FAE5; color: #065F46; }
+        .badge-completed { background: #DBEAFE; color: #1E40AF; }
+        .badge-high { background: #FEE2E2; color: #991B1B; }
 
-        .badge-pending {
-            background: #FEF3C7;
-            color: #92400E;
+        #map { height: 400px; border-radius: 12px; }
+
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+
+        .form-input {
+            transition: all 0.3s ease;
+            border: 2px solid #E5E7EB;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #D94A2B;
+            box-shadow: 0 0 0 4px rgba(217,74,43,0.1);
         }
 
-        .badge-assigned {
-            background: #DBEAFE;
-            color: #1E40AF;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(45,49,66,0.9);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
         }
-
-        .badge-high {
-            background: #FEE2E2;
-            color: #991B1B;
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        #map {
-            height: 400px;
-            border-radius: 12px;
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
     </style>
 </head>
 
 <body class="flex h-screen overflow-hidden">
     <!-- Sidebar -->
-    <aside class="sidebar w-64 text-white flex flex-col">
+    <aside class="sidebar w-64 text-white flex flex-col flex-shrink-0">
         <div class="p-6">
             <div class="flex items-center space-x-3 mb-8">
-                <div
-                    class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-xl flex items-center justify-center">
+                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-xl flex items-center justify-center">
                     <span class="text-white font-bold text-xl">N</span>
                 </div>
                 <h1 class="text-xl font-bold">NGO-Connect</h1>
             </div>
 
             <nav class="space-y-2">
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 bg-white/10 rounded-lg">
+                <a href="#" onclick="switchSection('alerts')" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="alerts">
                     <span>🚨</span>
                     <span class="font-semibold">Active Alerts</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/10 rounded-lg transition">
+                <a href="#" onclick="switchSection('rescues')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="rescues">
                     <span>📊</span>
                     <span>My Rescues</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/10 rounded-lg transition">
+                <a href="#" onclick="switchSection('adoption')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="adoption">
+                    <span>🐾</span>
+                    <span>List Animals</span>
+                </a>
+                <a href="#" onclick="switchSection('team')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="team">
                     <span>👥</span>
                     <span>Team</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 hover:bg-white/10 rounded-lg transition">
+                <a href="#" onclick="switchSection('trust')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="trust">
+                    <span>🛡️</span>
+                    <span>Reputation</span>
+                </a>
+                <a href="#" onclick="switchSection('settings')" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg" data-section="settings">
                     <span>⚙️</span>
                     <span>Settings</span>
                 </a>
@@ -122,10 +146,13 @@
         </div>
 
         <div class="mt-auto p-6">
-            <div class="bg-white/10 rounded-lg p-4">
-                <p class="text-sm font-semibold mb-1">Paws & Rescue NGO</p>
+            <div class="bg-white/10 rounded-lg p-4 mb-4">
+                <p class="text-sm font-semibold mb-1" id="sidebarNgoName">Animal NGO</p>
                 <p class="text-xs text-gray-300">Animal Welfare</p>
             </div>
+            <button onclick="logout()" class="w-full text-left text-sm text-gray-400 hover:text-white transition px-2">
+                🚪 Logout
+            </button>
         </div>
     </aside>
 
@@ -135,8 +162,8 @@
         <header class="bg-white border-b border-gray-200 px-8 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Rescue Alerts Dashboard</h2>
-                    <p class="text-gray-600">Real-time animal rescue reports in your area</p>
+                    <h2 class="text-2xl font-bold text-gray-900" id="sectionTitle">Rescue Alerts Dashboard</h2>
+                    <p class="text-gray-600" id="sectionSubtitle">Real-time animal rescue reports in your area</p>
                 </div>
                 <div class="flex items-center space-x-4">
                     <button class="relative p-2 hover:bg-gray-100 rounded-lg transition">
@@ -145,103 +172,384 @@
                     </button>
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-full"></div>
-                        <span class="font-semibold">Admin</span>
+                        <span class="font-semibold" id="headerNgoName">Admin</span>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Stats Overview -->
-        <section class="px-8 py-6">
-            <div class="grid grid-cols-4 gap-6">
-                <div class="stat-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-gray-600">Active Alerts</span>
-                        <span class="text-2xl">🚨</span>
+        <!-- ============ ALERTS SECTION ============ -->
+        <div id="section-alerts" class="section-panel active">
+            <!-- Stats Overview -->
+            <section class="px-8 py-6">
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-gray-600">Active Alerts</span>
+                            <span class="text-2xl">🚨</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900" id="statActive">0</p>
+                        <p class="text-sm text-green-600 mt-1">Pending reports</p>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900">12</p>
-                    <p class="text-sm text-green-600 mt-1">+3 new today</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-gray-600">My Assignments</span>
-                        <span class="text-2xl">📋</span>
+                    <div class="stat-card">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-gray-600">My Assignments</span>
+                            <span class="text-2xl">📋</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900" id="statAssigned">0</p>
+                        <p class="text-sm text-blue-600 mt-1">Accepted tasks</p>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900">5</p>
-                    <p class="text-sm text-blue-600 mt-1">3 in progress</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-gray-600">Completed</span>
-                        <span class="text-2xl">✅</span>
+                    <div class="stat-card">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-gray-600">Completed</span>
+                            <span class="text-2xl">✅</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900" id="statCompleted">0</p>
+                        <p class="text-sm text-gray-600 mt-1">Total rescues</p>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900">247</p>
-                    <p class="text-sm text-gray-600 mt-1">This month: 23</p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-gray-600">Response Time</span>
-                        <span class="text-2xl">⚡</span>
+                    <div class="stat-card">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-gray-600">Response Time</span>
+                            <span class="text-2xl">⚡</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">12m</p>
+                        <p class="text-sm text-green-600 mt-1">Average</p>
                     </div>
-                    <p class="text-3xl font-bold text-gray-900">12m</p>
-                    <p class="text-sm text-green-600 mt-1">-5m from avg</p>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Map View -->
-        <section class="px-8 py-6">
-            <div class="bg-white rounded-2xl p-6 shadow-sm">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gray-900">Area Map</h3>
-                    <button onclick="refreshMap()"
-                        class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition text-sm font-semibold">
-                        🔄 Refresh
-                    </button>
-                </div>
-                <div id="map"></div>
-            </div>
-        </section>
-
-        <!-- Active Alerts Feed -->
-        <section class="px-8 py-6">
-            <div class="bg-white rounded-2xl p-6 shadow-sm">
-                <h3 class="text-xl font-bold text-gray-900 mb-6">Active Rescue Alerts</h3>
-
-                <div id="alertsFeed" class="space-y-4">
-                    <!-- Alerts will be loaded here dynamically -->
-                </div>
-
-                <div id="loadingAlerts" class="text-center py-12">
-                    <div
-                        class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin">
+            <!-- Map View -->
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">Area Map</h3>
+                        <button onclick="refreshMap()" class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition text-sm font-semibold">
+                            🔄 Refresh
+                        </button>
                     </div>
-                    <p class="text-gray-600 mt-4">Loading rescue alerts...</p>
+                    <div id="map"></div>
+                </div>
+            </section>
+
+            <!-- Active Alerts Feed -->
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Active Rescue Alerts</h3>
+                    <div id="alertsFeed" class="space-y-4"></div>
+                    <div id="loadingAlerts" class="text-center py-12">
+                        <div class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin"></div>
+                        <p class="text-gray-600 mt-4">Loading rescue alerts...</p>
+                    </div>
+                    <div id="noAlerts" style="display: none;" class="text-center py-12">
+                        <p class="text-6xl mb-4">🎉</p>
+                        <p class="text-xl font-semibold text-gray-900 mb-2">All Clear!</p>
+                        <p class="text-gray-600">No active rescue alerts in your area right now.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============ MY RESCUES SECTION ============ -->
+        <div id="section-rescues" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">My Accepted Rescues</h3>
+                    <div id="rescuesFeed" class="space-y-4"></div>
+                    <div id="noRescues" style="display:none" class="text-center py-12">
+                        <p class="text-5xl mb-4">📋</p>
+                        <p class="text-lg font-semibold text-gray-700">No accepted rescues yet</p>
+                        <p class="text-gray-500">Accept rescue alerts to see them here.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============ ADOPTION LISTING SECTION ============ -->
+        <div id="section-adoption" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">🐾 Animals for Adoption</h3>
+                        <button onclick="openListAnimalModal()" class="px-6 py-2.5 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-lg font-semibold hover:shadow-lg transition">
+                            + List New Animal
+                        </button>
+                    </div>
+                    <div id="adoptionList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+                    <div id="noAdoptions" style="display:none" class="text-center py-12">
+                        <p class="text-5xl mb-4">🐾</p>
+                        <p class="text-lg font-semibold text-gray-700">No animals listed</p>
+                        <p class="text-gray-500">Click "List New Animal" to add animals for adoption.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============ TEAM SECTION ============ -->
+        <div id="section-team" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">👥 Team Members</h3>
+                        <button onclick="openAddMemberModal()" class="px-6 py-2.5 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-lg font-semibold hover:shadow-lg transition">
+                            + Add Member
+                        </button>
+                    </div>
+                    <div id="teamList" class="space-y-3"></div>
+                    <div id="noTeam" style="display:none" class="text-center py-12">
+                        <p class="text-5xl mb-4">👥</p>
+                        <p class="text-lg font-semibold text-gray-700">No team members</p>
+                        <p class="text-gray-500">Add team members to manage your rescue operations.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============ TRUST & REPUTATION SECTION ============ -->
+        <div id="section-trust" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <div class="col-span-1 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">AI Trust Score</h3>
+                        <div class="relative w-32 h-32 flex items-center justify-center mb-4">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                                <path id="trustScoreCircle" class="text-green-500 transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="trustScoreValue" class="text-3xl font-extrabold text-gray-900">0</span>
+                                <span class="text-xs text-gray-500">/ 100</span>
+                            </div>
+                        </div>
+                        <div id="trustBadge" class="px-4 py-2 rounded-full border text-sm font-bold">
+                            Loading...
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">How your score is calculated</h3>
+                        <ul class="space-y-4">
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">1</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Action & Responsiveness (Max 20 pts)</p>
+                                    <p class="text-gray-600 text-xs">Completing rescues successfully boosts your score.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0">2</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Community Ratings (Max 20 pts)</p>
+                                    <p class="text-gray-600 text-xs">Maintaining high star ratings directly improves trust.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4 items-start">
+                                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">3</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Profile Completeness (Max 10 pts)</p>
+                                    <p class="text-gray-600 text-xs">An accurate description and location adds points.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div id="noAlerts" style="display: none;" class="text-center py-12">
-                    <p class="text-6xl mb-4">🎉</p>
-                    <p class="text-xl font-semibold text-gray-900 mb-2">All Clear!</p>
-                    <p class="text-gray-600">No active rescue alerts in your area right now.</p>
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Recent Community Reviews (<span id="reviewCount">0</span>)</h3>
+                    <div id="reviewsList" class="space-y-4"></div>
+                    <div id="noReviews" style="display:none" class="text-center py-8">
+                        <p class="text-4xl mb-3">⭐</p>
+                        <p class="text-gray-600">No reviews yet. Complete rescues so users can rate you!</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+
+        <!-- ============ SETTINGS SECTION ============ -->
+        <div id="section-settings" class="section-panel">
+            <section class="px-8 py-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm max-w-2xl">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">⚙️ NGO Settings</h3>
+                    <form onsubmit="saveSettings(event)">
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Organization Name</label>
+                            <input type="text" id="settingsName" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Description</label>
+                            <textarea id="settingsDesc" rows="3" class="form-input w-full px-4 py-3 rounded-xl"></textarea>
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Contact Number</label>
+                            <input type="tel" id="settingsPhone" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Service Radius (km)</label>
+                            <input type="number" id="settingsRadius" class="form-input w-full px-4 py-3 rounded-xl" min="1" max="100">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-gray-700 font-semibold mb-1">Address</label>
+                            <input type="text" id="settingsAddress" class="form-input w-full px-4 py-3 rounded-xl">
+                        </div>
+                        <button type="submit" class="bg-gradient-to-r from-red-500 to-orange-400 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition">
+                            Save Settings ✅
+                        </button>
+                        <span id="settingsSaved" class="ml-4 text-green-600 font-semibold" style="display:none">Saved!</span>
+                    </form>
+                </div>
+            </section>
+        </div>
     </main>
 
+    <!-- List Animal Modal -->
+    <div id="listAnimalModal" class="modal">
+        <div class="modal-content p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">🐾 List Animal for Adoption</h3>
+                <button onclick="closeListAnimalModal()" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <form onsubmit="submitAnimal(event)" enctype="multipart/form-data">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Name *</label>
+                        <input type="text" id="animalName" class="form-input w-full px-4 py-3 rounded-xl" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Species *</label>
+                        <select id="animalSpecies" class="form-input w-full px-4 py-3 rounded-xl" required>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="bird">Bird</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Breed</label>
+                        <input type="text" id="animalBreed" class="form-input w-full px-4 py-3 rounded-xl" value="Mixed">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Age *</label>
+                        <input type="text" id="animalAge" class="form-input w-full px-4 py-3 rounded-xl" placeholder="e.g. 2 years" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Gender</label>
+                        <select id="animalGender" class="form-input w-full px-4 py-3 rounded-xl">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1">Description *</label>
+                    <textarea id="animalDesc" rows="3" class="form-input w-full px-4 py-3 rounded-xl" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1">Photo *</label>
+                    <input type="file" id="animalPhoto" accept="image/*" class="form-input w-full px-4 py-3 rounded-xl" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-1">Health</label>
+                        <input type="text" id="animalHealth" class="form-input w-full px-4 py-3 rounded-xl" value="Good">
+                    </div>
+                    <div class="flex items-center pt-7">
+                        <input type="checkbox" id="animalVaccinated" class="mr-2 w-5 h-5">
+                        <label class="text-gray-700 font-semibold">Vaccinated</label>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-orange-400 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition">
+                    List Animal 🐾
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Team Member Modal -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">👥 Add Team Member</h3>
+                <button onclick="closeAddMemberModal()" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <form onsubmit="submitTeamMember(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1">Name *</label>
+                    <input type="text" id="memberName" class="form-input w-full px-4 py-3 rounded-xl" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1">Role *</label>
+                    <input type="text" id="memberRole" class="form-input w-full px-4 py-3 rounded-xl" placeholder="e.g. Rescue Lead, Vet, Volunteer" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1">Contact</label>
+                    <input type="text" id="memberContact" class="form-input w-full px-4 py-3 rounded-xl">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-1">Email</label>
+                    <input type="email" id="memberEmail" class="form-input w-full px-4 py-3 rounded-xl">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-orange-400 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition">
+                    Add Member 👤
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const ngoId = localStorage.getItem("ngoId");
+        const API_BASE = window.location.origin;
+        const ngoId = localStorage.getItem('ngoId');
+        const ngoName = localStorage.getItem('ngoName') || 'Animal NGO';
 
-        
+        if (!ngoId) {
+            window.location.href = 'index.html';
+        }
 
-        // Initialize map
+        // Set NGO name in sidebar and header
+        document.getElementById('sidebarNgoName').textContent = ngoName;
+        document.getElementById('headerNgoName').textContent = ngoName;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // ========== SIDEBAR NAVIGATION ==========
+        function switchSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section-panel').forEach(panel => panel.classList.remove('active'));
+            // Show selected section
+            document.getElementById(`section-${section}`).classList.add('active');
+
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            document.querySelector(`.sidebar-link[data-section="${section}"]`).classList.add('active');
+
+            // Update header
+            const titles = {
+                alerts: ['Rescue Alerts Dashboard', 'Real-time animal rescue reports in your area'],
+                rescues: ['My Rescues', 'Track your accepted rescue tasks'],
+                adoption: ['Animal Adoption Listing', 'Manage animals available for adoption'],
+                team: ['Team Management', 'Manage your rescue team members'],
+                settings: ['NGO Settings', 'Update your organization profile']
+            };
+            document.getElementById('sectionTitle').textContent = titles[section][0];
+            document.getElementById('sectionSubtitle').textContent = titles[section][1];
+
+            // Load section data
+            if (section === 'rescues') loadMyRescues();
+            if (section === 'adoption') loadMyAnimals();
+            if (section === 'team') loadTeam();
+            if (section === 'settings') loadSettings();
+        }
+
+        // ========== MAP ==========
         let map;
         let markers = [];
 
         function initMap() {
-            // Default to a central location (you can change this)
             const defaultLat = 28.6139;
             const defaultLng = 77.2090;
 
@@ -251,7 +559,6 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add NGO location marker
             const ngoMarker = L.marker([defaultLat, defaultLng], {
                 icon: L.divIcon({
                     className: 'custom-icon',
@@ -260,13 +567,13 @@
                 })
             }).addTo(map);
 
-            ngoMarker.bindPopup('<b>Your NGO Location</b><br>Paws & Rescue');
+            ngoMarker.bindPopup(`<b>Your NGO Location</b><br>${ngoName}`);
         }
 
-        // Load rescue alerts
+        // ========== ALERTS ==========
         async function loadAlerts() {
             try {
-                const response = await fetch('http://localhost:5000/api/reports?status=pending');
+                const response = await fetch(`${API_BASE}/api/reports`);
                 const data = await response.json();
 
                 const alertsFeed = document.getElementById('alertsFeed');
@@ -279,11 +586,17 @@
                     alertsFeed.innerHTML = '';
                     noAlerts.style.display = 'none';
 
+                    // Update stats
+                    const pending = data.reports.filter(r => r.status === 'pending').length;
+                    const assigned = data.reports.filter(r => r.status === 'assigned').length;
+                    const completed = data.reports.filter(r => r.status === 'completed').length;
+                    document.getElementById('statActive').textContent = pending;
+                    document.getElementById('statAssigned').textContent = assigned;
+                    document.getElementById('statCompleted').textContent = completed;
+
                     data.reports.forEach((report, index) => {
                         const alertCard = createAlertCard(report, index);
                         alertsFeed.appendChild(alertCard);
-
-                        // Add marker to map
                         addMarkerToMap(report);
                     });
                 } else {
@@ -307,11 +620,28 @@
             const timeAgo = getTimeAgo(new Date(report.createdAt));
             const priorityBadge = getPriorityBadge(report.priority);
 
+            // Status badge with correct styling
+            let statusBadgeClass = 'badge-pending';
+            let statusLabel = report.status;
+            if (report.status === 'assigned') {
+                statusBadgeClass = 'badge-assigned';
+                statusLabel = '✅ Accepted';
+            } else if (report.status === 'in-progress') {
+                statusBadgeClass = 'badge-assigned';
+                statusLabel = '🔧 Under Work';
+            } else if (report.status === 'completed') {
+                statusBadgeClass = 'badge-completed';
+                statusLabel = '🎉 Completed';
+            }
+
+            const isAccepted = report.status !== 'pending';
+            const isComplete = report.status === 'completed';
+
             div.innerHTML = `
                 <div class="flex gap-6">
                     <div class="flex-shrink-0">
-                        <img src="http://localhost:5000${report.photoUrl}" 
-                             alt="Animal photo" 
+                        <img src="${API_BASE}${report.photoUrl}"
+                             alt="Animal photo"
                              class="w-32 h-32 object-cover rounded-lg"
                              onerror="this.src='https://via.placeholder.com/128?text=No+Image'">
                     </div>
@@ -322,7 +652,7 @@
                                     Report #${report.reportId}
                                 </h4>
                                 <div class="flex gap-2">
-                                    <span class="badge badge-pending">${report.status}</span>
+                                    <span class="badge ${statusBadgeClass}">${statusLabel}</span>
                                     ${priorityBadge}
                                     <span class="badge" style="background: #F3E8FF; color: #6B21A8;">
                                         ${report.animalType}
@@ -339,19 +669,29 @@
                             ${report.reporterContact ? `<span>📞 ${report.reporterContact}</span>` : ''}
                         </div>
 
+                        ${report.assignedNGOName ? `<p class="text-sm text-green-600 font-semibold mb-3">✅ Accepted by: ${report.assignedNGOName}</p>` : ''}
+
                         <div class="flex gap-3">
-                            <button onclick="acceptTask('${report.reportId}')" 
+                            ${!isAccepted ? `
+                            <button onclick="acceptTask('${report.reportId}')"
                                     class="px-6 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
                                 ✅ Accept Task
-                            </button>
-                            <button onclick="viewOnMap(${report.location.coordinates.latitude}, ${report.location.coordinates.longitude})" 
+                            </button>` : ''}
+                            ${report.status === 'assigned' ? `
+                            <button onclick="updateStatus('${report.reportId}', 'in-progress')"
+                                    class="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+                                🔧 Start Work
+                            </button>` : ''}
+                            ${report.status === 'in-progress' ? `
+                            <button onclick="updateStatus('${report.reportId}', 'completed')"
+                                    class="px-6 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
+                                ✅ Mark Resolved
+                            </button>` : ''}
+                            ${!isComplete ? `
+                            <button onclick="viewOnMap(${report.location.coordinates.latitude}, ${report.location.coordinates.longitude})"
                                     class="px-6 py-2.5 bg-white border-2 border-gray-300 rounded-lg font-semibold hover:border-red-500 transition">
                                 🗺️ View on Map
-                            </button>
-                            <button onclick="showDetails('${report.reportId}')" 
-                                    class="px-6 py-2.5 bg-white border-2 border-gray-300 rounded-lg font-semibold hover:border-gray-400 transition">
-                                View Details
-                            </button>
+                            </button>` : ''}
                         </div>
                     </div>
                 </div>
@@ -372,7 +712,6 @@
 
         function getTimeAgo(date) {
             const seconds = Math.floor((new Date() - date) / 1000);
-
             if (seconds < 60) return 'Just now';
             if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
             if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
@@ -401,25 +740,12 @@
         }
 
         async function acceptTask(reportId) {
-            if (!confirm('Are you sure you want to accept this rescue task?')) {
-                return;
-            }
-
-            // ✅ get real NGO id from login
-            const ngoId = localStorage.getItem('ngoId');
-
-            if (!ngoId) {
-                alert('NGO not logged in. Please login again.');
-                window.location.href = 'index.html';
-                return;
-            }
+            if (!confirm('Accept this rescue task?')) return;
 
             try {
-                const response = await fetch(`http://localhost:5000/api/reports/${reportId}/assign`, {
+                const response = await fetch(`${API_BASE}/api/reports/${reportId}/assign`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ngoId })
                 });
 
@@ -431,7 +757,7 @@
                 }
 
                 alert('✅ Rescue task accepted! Dispatch your team immediately.');
-                loadAlerts(); // refresh alerts
+                loadAlerts();
 
             } catch (error) {
                 console.error('Error accepting task:', error);
@@ -439,14 +765,24 @@
             }
         }
 
+        async function updateStatus(reportId, status) {
+            try {
+                const res = await fetch(`${API_BASE}/api/reports/${reportId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                if (res.ok) {
+                    alert('Status updated!');
+                    loadAlerts();
+                }
+            } catch (err) { alert('Failed to update status'); }
+        }
 
         function viewOnMap(lat, lng) {
             map.setView([lat, lng], 15);
+            switchSection('alerts');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showDetails(reportId) {
-            alert(`Showing details for report #${reportId}\n\n(In production, this would open a detailed modal)`);
         }
 
         function refreshMap() {
@@ -455,12 +791,360 @@
             loadAlerts();
         }
 
-        // Initialize on page load
+        // ========== MY RESCUES ==========
+        async function loadMyRescues() {
+            try {
+                const res = await fetch(`${API_BASE}/api/reports?status=assigned`);
+                const data = await res.json();
+                const container = document.getElementById('rescuesFeed');
+                const noRescues = document.getElementById('noRescues');
+
+                // Filter to only show rescues assigned to this NGO
+                const myRescues = (data.reports || []).filter(r => r.assignedNGOName === ngoName);
+
+                if (myRescues.length === 0) {
+                    container.innerHTML = '';
+                    noRescues.style.display = 'block';
+                    return;
+                }
+
+                noRescues.style.display = 'none';
+
+                container.innerHTML = myRescues.map(report => `
+                    <div class="bg-gray-50 rounded-xl p-5 border-2 border-green-200 flex gap-5">
+                        <img src="${API_BASE}${report.photoUrl}" alt="" class="w-24 h-24 rounded-lg object-cover"
+                             onerror="this.src='https://via.placeholder.com/96?text=No+Image'">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-bold text-gray-900">Report #${report.reportId}</h4>
+                                <span class="badge badge-assigned">✅ Accepted</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">${report.description}</p>
+                            <p class="text-xs text-gray-500">📍 ${report.location.address}</p>
+                            <button onclick="updateStatus('${report.reportId}', 'completed')"
+                                    class="mt-3 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition">
+                                Mark as Completed ✅
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('rescuesFeed').innerHTML = '<p class="text-red-500">Failed to load rescues.</p>';
+            }
+        }
+
+        // ========== ADOPTION MANAGEMENT ==========
+        function openListAnimalModal() { document.getElementById('listAnimalModal').classList.add('active'); }
+        function closeListAnimalModal() { document.getElementById('listAnimalModal').classList.remove('active'); }
+
+        async function submitAnimal(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('animalName').value);
+            formData.append('species', document.getElementById('animalSpecies').value);
+            formData.append('breed', document.getElementById('animalBreed').value);
+            formData.append('age', document.getElementById('animalAge').value);
+            formData.append('gender', document.getElementById('animalGender').value);
+            formData.append('description', document.getElementById('animalDesc').value);
+            formData.append('photo', document.getElementById('animalPhoto').files[0]);
+            formData.append('health', document.getElementById('animalHealth').value);
+            formData.append('vaccinated', document.getElementById('animalVaccinated').checked);
+            formData.append('ngoId', ngoId);
+
+            try {
+                const res = await fetch(`${API_BASE}/api/adoptions`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert('Animal listed for adoption! 🐾');
+                    closeListAnimalModal();
+                    e.target.reset();
+                    loadMyAnimals();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Failed to list animal');
+                }
+            } catch (err) {
+                alert('Server error');
+            }
+        }
+
+        async function loadMyAnimals() {
+            try {
+                const res = await fetch(`${API_BASE}/api/adoptions?ngoId=${ngoId}&status=available`);
+                const data = await res.json();
+                const container = document.getElementById('adoptionList');
+                const noAdoptions = document.getElementById('noAdoptions');
+
+                // Also load adopted ones
+                const res2 = await fetch(`${API_BASE}/api/adoptions?ngoId=${ngoId}&status=adopted`);
+                const data2 = await res2.json();
+                const allAnimals = [...(data.animals || []), ...(data2.animals || [])];
+
+                if (allAnimals.length === 0) {
+                    container.innerHTML = '';
+                    noAdoptions.style.display = 'block';
+                    return;
+                }
+
+                noAdoptions.style.display = 'none';
+
+                container.innerHTML = allAnimals.map(a => `
+                    <div class="bg-gray-50 rounded-xl overflow-hidden border border-gray-200">
+                        <div class="h-40 bg-gray-100 overflow-hidden">
+                            <img src="${API_BASE}${a.photoUrl}" alt="${a.name}" class="w-full h-full object-cover"
+                                 onerror="this.src='https://via.placeholder.com/300x160?text=${a.species}'">
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <h4 class="font-bold text-gray-900">${a.name}</h4>
+                                <span class="badge ${a.status === 'adopted' ? 'badge-assigned' : 'badge-pending'}">
+                                    ${a.status === 'adopted' ? '🏠 Adopted' : '🐾 Available'}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">${a.breed} · ${a.age} · ${a.gender}</p>
+                            ${a.adoptedByName ? `<p class="text-xs text-green-600 font-semibold">Adopted by: ${a.adoptedByName}</p>` : ''}
+                            ${a.status === 'available' ? `
+                            <button onclick="deleteAnimal('${a.animalId}')"
+                                    class="mt-2 text-red-500 text-xs font-semibold hover:text-red-700">
+                                🗑️ Remove Listing
+                            </button>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('adoptionList').innerHTML = '<p class="text-red-500">Failed to load.</p>';
+            }
+        }
+
+        async function deleteAnimal(animalId) {
+            if (!confirm('Remove this animal listing?')) return;
+            try {
+                await fetch(`${API_BASE}/api/adoptions/${animalId}`, { method: 'DELETE' });
+                loadMyAnimals();
+            } catch (err) { alert('Failed to remove.'); }
+        }
+
+        // ========== TEAM ==========
+        function openAddMemberModal() { document.getElementById('addMemberModal').classList.add('active'); }
+        function closeAddMemberModal() { document.getElementById('addMemberModal').classList.remove('active'); }
+
+        async function submitTeamMember(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/team`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('memberName').value,
+                        role: document.getElementById('memberRole').value,
+                        contact: document.getElementById('memberContact').value,
+                        email: document.getElementById('memberEmail').value
+                    })
+                });
+
+                if (res.ok) {
+                    alert('Team member added! 👥');
+                    closeAddMemberModal();
+                    e.target.reset();
+                    loadTeam();
+                } else {
+                    alert('Failed to add member');
+                }
+            } catch (err) { alert('Server error'); }
+        }
+
+        async function loadTeam() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/team`);
+                const data = await res.json();
+                const container = document.getElementById('teamList');
+                const noTeam = document.getElementById('noTeam');
+
+                if (!data.team || data.team.length === 0) {
+                    container.innerHTML = '';
+                    noTeam.style.display = 'block';
+                    return;
+                }
+
+                noTeam.style.display = 'none';
+
+                container.innerHTML = data.team.map(m => `
+                    <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-orange-300 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                ${m.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">${m.name}</h4>
+                                <p class="text-sm text-gray-500">${m.role}</p>
+                                <div class="flex gap-3 text-xs text-gray-400 mt-1">
+                                    ${m.contact ? `<span>📞 ${m.contact}</span>` : ''}
+                                    ${m.email ? `<span>📧 ${m.email}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="removeMember('${m.memberId}')"
+                                class="text-red-400 hover:text-red-600 text-sm font-semibold">
+                            Remove
+                        </button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                document.getElementById('teamList').innerHTML = '<p class="text-red-500">Failed to load team.</p>';
+            }
+        }
+
+        async function removeMember(memberId) {
+            if (!confirm('Remove this team member?')) return;
+            try {
+                await fetch(`${API_BASE}/api/ngos/${ngoId}/team/${memberId}`, { method: 'DELETE' });
+                loadTeam();
+            } catch (err) { alert('Failed to remove.'); }
+        }
+
+        // ========== SETTINGS ==========
+        async function loadSettings() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                const data = await res.json();
+                if (data.ngo) {
+                    document.getElementById('settingsName').value = data.ngo.name || '';
+                    document.getElementById('settingsDesc').value = data.ngo.description || '';
+                    document.getElementById('settingsPhone').value = data.ngo.contactNumber || '';
+                    document.getElementById('settingsRadius').value = data.ngo.serviceRadius || 10;
+                    document.getElementById('settingsAddress').value = data.ngo.location?.address || '';
+                }
+            } catch (err) { console.error('Failed to load settings'); }
+        }
+
+        async function saveSettings(e) {
+            e.preventDefault();
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}/settings`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('settingsName').value,
+                        description: document.getElementById('settingsDesc').value,
+                        contactNumber: document.getElementById('settingsPhone').value,
+                        serviceRadius: parseInt(document.getElementById('settingsRadius').value),
+                        'location.address': document.getElementById('settingsAddress').value
+                    })
+                });
+
+                if (res.ok) {
+                    const saved = document.getElementById('settingsSaved');
+                    saved.style.display = 'inline';
+                    setTimeout(() => saved.style.display = 'none', 3000);
+
+                    // Update name in sidebar
+                    const newName = document.getElementById('settingsName').value;
+                    document.getElementById('sidebarNgoName').textContent = newName;
+                    document.getElementById('headerNgoName').textContent = newName;
+                    localStorage.setItem('ngoName', newName);
+                } else {
+                    alert('Failed to save settings');
+                }
+            } catch (err) { alert('Server error'); }
+        }
+
+        // Load Trust & Reputation Data
+        async function loadTrustData() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ngos/${ngoId}`);
+                if (!res.ok) throw new Error('Failed to fetch NGO data');
+                const data = await res.json();
+                
+                const score = data.ngo.aiTrustScore || 50;
+                document.getElementById('trustScoreValue').textContent = score;
+                const circle = document.getElementById('trustScoreCircle');
+                const circumference = 2 * Math.PI * 16; // 16 is r from svg
+                circle.style.strokeDasharray = `${(score / 100) * circumference}, ${circumference}`;
+
+                const badge = document.getElementById('trustBadge');
+                if (data.ngo.verificationStatus === 'verified') {
+                    badge.className = 'px-4 py-2 rounded-full border bg-green-100 text-green-800 border-green-200 font-bold';
+                    badge.innerHTML = '🟢 Verified Organization';
+                    circle.classList.add('text-green-500');
+                    circle.classList.remove('text-yellow-500', 'text-red-500');
+                } else if (data.ngo.verificationStatus === 'suspicious') {
+                    badge.className = 'px-4 py-2 rounded-full border bg-red-100 text-red-800 border-red-200 font-bold';
+                    badge.innerHTML = '🔴 Suspicious';
+                    circle.classList.add('text-red-500');
+                    circle.classList.remove('text-green-500', 'text-yellow-500');
+                } else {
+                    badge.className = 'px-4 py-2 rounded-full border bg-yellow-100 text-yellow-800 border-yellow-200 font-bold';
+                    badge.innerHTML = '🟡 Caution (Unverified)';
+                    circle.classList.add('text-yellow-500');
+                    circle.classList.remove('text-green-500', 'text-red-500');
+                }
+
+                const ratings = data.ngo.ratings || [];
+                document.getElementById('reviewCount').textContent = ratings.length;
+                
+                const reviewsList = document.getElementById('reviewsList');
+                const noReviews = document.getElementById('noReviews');
+                
+                if (ratings.length === 0) {
+                    reviewsList.innerHTML = '';
+                    noReviews.style.display = 'block';
+                } else {
+                    noReviews.style.display = 'none';
+                    // Sort descending by date
+                    ratings.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    
+                    reviewsList.innerHTML = ratings.map(r => `
+                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="font-bold text-gray-900">${r.userName || 'User'}</p>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-yellow-400">⭐</span>
+                                    <span class="font-bold text-gray-700">${r.score}/5</span>
+                                </div>
+                            </div>
+                            ${r.review ? `<p class="text-sm text-gray-600 mt-2 italic">"${r.review}"</p>` : ''}
+                            <p class="text-xs text-gray-400 mt-2">${new Date(r.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Navigation
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+            document.querySelector(`.sidebar-link[data-section="${sectionId}"]`).classList.add('active');
+
+            if (sectionId === 'rescues') loadRescues();
+            if (sectionId === 'adoption') loadAdoptionAnimals();
+            if (sectionId === 'team') loadTeam();
+            if (sectionId === 'settings') loadSettings();
+            if (sectionId === 'trust') loadTrustData();
+            if (sectionId === 'alerts') {
+                setTimeout(() => { if (map) map.invalidateSize(); }, 100);
+            }
+        }
+
+        // Close modals on outside click
+        window.onclick = function(e) {
+            if (e.target.id === 'listAnimalModal') closeListAnimalModal();
+            if (e.target.id === 'addMemberModal') closeAddMemberModal();
+        };
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initMap();
             loadAlerts();
-
-            // Auto-refresh every 30 seconds
+            loadTrustData();
             setInterval(loadAlerts, 30000);
         });
     </script>

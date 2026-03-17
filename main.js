@@ -4,6 +4,7 @@ const API_BASE = window.location.origin;
 
 // Global variables
 let currentLocation = null;
+let authMode = 'login'; // 'login' or 'signup'
 
 // Make functions globally available immediately
 window.openReportModal = openReportModal;
@@ -37,7 +38,6 @@ function getLocation() {
             latInput.value = lat;
             longInput.value = lng;
 
-            // Reverse geocode to get address
             try {
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
@@ -102,7 +102,6 @@ function openReportModal() {
     if (reportForm) reportForm.style.display = 'block';
     if (reportSuccess) reportSuccess.style.display = 'none';
 
-    // Auto-get location when modal opens
     setTimeout(() => {
         getLocation();
     }, 500);
@@ -127,6 +126,7 @@ function openAuthModal(type) {
     const modal = document.getElementById('authModal');
     const title = document.getElementById('authTitle');
     const switchText = document.getElementById('authSwitch');
+    const signupFields = document.getElementById('signupFields');
 
     if (!modal) {
         console.error('❌ Auth modal not found!');
@@ -136,19 +136,25 @@ function openAuthModal(type) {
     modal.classList.add('active');
 
     if (type === 'login') {
+        authMode = 'login';
         if (title) title.textContent = 'Login';
+        if (signupFields) signupFields.style.display = 'none';
         if (switchText) {
             switchText.innerHTML = 'Don\'t have an account? <a href="#" onclick="openAuthModal(\'signup\'); return false;" class="text-red-600 font-semibold">Sign Up</a>';
         }
     } else if (type === 'signup') {
+        authMode = 'signup';
         if (title) title.textContent = 'Sign Up';
+        if (signupFields) signupFields.style.display = 'block';
         if (switchText) {
             switchText.innerHTML = 'Already have an account? <a href="#" onclick="openAuthModal(\'login\'); return false;" class="text-red-600 font-semibold">Login</a>';
         }
     } else if (type === 'ngo') {
+        authMode = 'login';
         if (title) title.textContent = 'NGO Login';
         const userTypeSelect = document.getElementById('userType');
         if (userTypeSelect) userTypeSelect.value = 'animal-ngo';
+        if (signupFields) signupFields.style.display = 'none';
         if (switchText) {
             switchText.innerHTML = 'Civilian? <a href="#" onclick="openAuthModal(\'login\'); return false;" class="text-red-600 font-semibold">Login here</a>';
         }
@@ -180,7 +186,6 @@ async function submitReport(event) {
         return;
     }
 
-    // Create FormData for file upload
     const formData = new FormData();
     formData.append('photo', photo);
     formData.append('description', description);
@@ -190,13 +195,23 @@ async function submitReport(event) {
     formData.append('longitude', longitude);
     formData.append('location', currentLocation.address);
 
+    // Attach user ID if logged in
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+        formData.append('userId', userId);
+    }
+    // Attach user phone if available
+    const userPhone = localStorage.getItem('userPhone');
+    if (userPhone && !contact) {
+        formData.set('contact', userPhone);
+    }
+
     try {
         const submitBtn = event.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Submitting...';
         submitBtn.disabled = true;
 
-        // API call to backend
         const response = await fetch(`${API_BASE}/api/reports`, {
             method: 'POST',
             body: formData
@@ -210,7 +225,6 @@ async function submitReport(event) {
         console.log('✅ Report submitted successfully:', data);
         localStorage.setItem('lastReportId', data.report.reportId);
 
-        // Show success message
         document.getElementById('reportForm').style.display = 'none';
         document.getElementById('reportSuccess').style.display = 'block';
 
@@ -219,7 +233,7 @@ async function submitReport(event) {
 
     } catch (error) {
         console.error('❌ Error submitting report:', error);
-        alert('Failed to submit report. Please check if the backend server is running on http://localhost:5000');
+        alert('Failed to submit report. Please check if the backend server is running.');
 
         const submitBtn = event.target.querySelector('button[type="submit"]');
         if (submitBtn) {
@@ -241,13 +255,83 @@ function setupAuthForm() {
         const password = document.getElementById('password').value;
         const userType = document.getElementById('userType').value;
 
-        if (userType !== 'animal-ngo') {
-            alert('Only NGO login implemented now');
+        // ========== CIVILIAN LOGIN/SIGNUP ==========
+        if (userType === 'civilian') {
+            if (authMode === 'signup') {
+                // Signup
+                const name = document.getElementById('signupName')?.value;
+                const phone = document.getElementById('signupPhone')?.value;
+
+                if (!name) {
+                    alert('Please enter your name');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/users/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, password, phone })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        alert(data.error || 'Registration failed');
+                        return;
+                    }
+
+                    localStorage.setItem('userId', data.user.userId);
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userPhone', data.user.phone || '');
+                    localStorage.setItem('userEmail', data.user.email);
+
+                    window.location.href = 'dashboard-user.html';
+
+                } catch (err) {
+                    alert('Server not running. Start backend first.');
+                }
+
+            } else {
+                // Login
+                try {
+                    const response = await fetch(`${API_BASE}/api/users/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        alert(data.error || 'Login failed');
+                        return;
+                    }
+
+                    localStorage.setItem('userId', data.user.userId);
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userPhone', data.user.phone || '');
+                    localStorage.setItem('userEmail', data.user.email);
+
+                    window.location.href = 'dashboard-user.html';
+
+                } catch (err) {
+                    alert('Server not running. Start backend first.');
+                }
+            }
             return;
         }
 
+        // ========== NGO LOGIN ==========
+        // Determine NGO type dashboard mapping
+        const ngoDashboardMap = {
+            'animal-ngo': 'dashboard-animal-ngo.html',
+            'oldage-ngo': 'dashboard-elderly-ngo.html',
+            'education-ngo': 'dashboard-education-ngo.html'
+        };
+
         try {
-            const response = await fetch('http://localhost:5000/api/ngos/login', {
+            const response = await fetch(`${API_BASE}/api/ngos/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -260,18 +344,26 @@ function setupAuthForm() {
                 return;
             }
 
-            // SAVE NGO ID
+            // Save NGO info
             localStorage.setItem('ngoId', data.ngo.ngoId);
+            localStorage.setItem('ngoName', data.ngo.name);
+            localStorage.setItem('ngoType', data.ngo.type);
 
-            // REDIRECT TO DASHBOARD
-            window.location.href = 'dashboard-animal-ngo.html';
+            // Redirect to correct dashboard based on NGO type
+            const typeMap = {
+                'animal-welfare': 'dashboard-animal-ngo.html',
+                'elderly-care': 'dashboard-elderly-ngo.html',
+                'education': 'dashboard-education-ngo.html'
+            };
+
+            const dashboard = typeMap[data.ngo.type] || ngoDashboardMap[userType] || 'dashboard-animal-ngo.html';
+            window.location.href = dashboard;
 
         } catch (err) {
             alert('Server not running. Start backend first.');
         }
     });
 }
-
 
 // Close modals when clicking outside
 window.onclick = function (event) {
@@ -305,27 +397,11 @@ function setupSmoothScroll() {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ NGO-Connect initialized');
-    console.log('✅ DOM loaded, setting up...');
-
     setupAuthForm();
     setupSmoothScroll();
-
-    // Verify critical functions are available
-    console.log('Functions check:');
-    console.log('- openReportModal:', typeof window.openReportModal);
-    console.log('- openAuthModal:', typeof window.openAuthModal);
-    console.log('- getLocation:', typeof window.getLocation);
-
-    // Check if geolocation is available
-    if (!navigator.geolocation) {
-        console.warn('⚠️ Geolocation is not supported by this browser');
-    }
-
     console.log('✅ All systems ready!');
 });
-document.addEventListener('DOMContentLoaded', () => {
-    setupAuthForm();
-});
+
 async function checkReportStatus() {
     const reportId = localStorage.getItem('reportId');
     if (!reportId) return;
@@ -338,14 +414,12 @@ async function checkReportStatus() {
 
         if (data.report.status === 'assigned') {
             alert(`Your report was accepted by ${data.report.assignedNGOName}`);
-            localStorage.removeItem('reportId'); // alert ek hi baar aaye
+            localStorage.removeItem('reportId');
         }
 
     } catch (err) {
         console.error('Status check failed', err);
     }
 }
-
-
 
 console.log('✅ main.js loaded completely');
