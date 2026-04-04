@@ -7,11 +7,17 @@
     <title>Education NGOs - NGO-Connect</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         :root { --primary: #D94A2B; --secondary: #F5A962; --accent: #4ECDC4; --dark: #2D3142; --light: #FFF8F3; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); }
         h1,h2,h3,h4,h5,h6 { font-family: 'Syne', sans-serif; }
+        .material-symbols-outlined {
+            vertical-align: middle;
+            line-height: 1;
+        }
         .card-hover { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .card-hover:hover { transform: translateY(-6px); box-shadow: 0 16px 50px rgba(78,205,196,0.2); }
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(45,49,66,0.9); backdrop-filter:blur(8px); z-index:1000; }
@@ -33,17 +39,23 @@
                     </div>
                     <h1 class="text-2xl font-bold text-gray-800">NGO-Connect</h1>
                 </a>
-                <a href="dashboard-user.html" class="text-gray-600 hover:text-teal-600 transition font-medium">← Back to Dashboard</a>
-            </div>
+                <div class="flex items-center space-x-4">
+                    <button id="langToggleBtn" onclick="toggleLanguage()"
+                        class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="lang.toggle">
+                        <span class="material-symbols-outlined">language</span> हिंदी
+                    </button>
+                    <a href="dashboard-user.html" class="text-gray-600 hover:text-teal-600 transition font-medium" data-i18n="nav.back_dashboard">← Back to Dashboard</a>
+                </div>
         </nav>
     </header>
 
     <!-- Hero -->
     <section class="bg-gradient-to-r from-teal-500 to-cyan-400 text-white py-16 px-6">
         <div class="container mx-auto max-w-6xl text-center">
-            <span class="text-6xl mb-4 block">📚</span>
-            <h2 class="text-5xl font-extrabold mb-4">Education</h2>
-            <p class="text-xl opacity-90 max-w-2xl mx-auto">Empower underprivileged children with education, resources, and opportunities for a brighter future.</p>
+            <span class="material-symbols-outlined text-6xl mb-4 block">menu_book</span>
+            <h2 class="text-5xl font-extrabold mb-4" data-i18n="causes.education_title">Education</h2>
+            <p class="text-xl opacity-90 max-w-2xl mx-auto" data-i18n="causes.education_hero">Empower underprivileged children with education, resources, and opportunities for a brighter future.</p>
         </div>
     </section>
 
@@ -52,17 +64,17 @@
         <div class="container mx-auto max-w-4xl">
             <div class="grid sm:grid-cols-3 gap-4">
                 <div class="bg-white rounded-2xl p-6 shadow-lg text-center">
-                    <span class="text-3xl block mb-2">🏫</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-teal-600">school</span>
                     <h4 class="font-bold text-gray-900" id="totalNGOs">0</h4>
                     <p class="text-sm text-gray-500">Education NGOs</p>
                 </div>
                 <button onclick="openDonateModal()" class="bg-white rounded-2xl p-6 shadow-lg text-center card-hover">
-                    <span class="text-3xl block mb-2">💝</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-pink-500">favorite</span>
                     <h4 class="font-bold text-gray-900">Donate</h4>
                     <p class="text-sm text-gray-500">Fund education</p>
                 </button>
                 <div class="bg-white rounded-2xl p-6 shadow-lg text-center">
-                    <span class="text-3xl block mb-2">🤝</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-blue-500">handshake</span>
                     <h4 class="font-bold text-gray-900">Volunteer</h4>
                     <p class="text-sm text-gray-500">Teach & mentor</p>
                 </div>
@@ -81,7 +93,7 @@
                 </div>
             </div>
             <div id="noNGOs" style="display:none" class="text-center py-12">
-                <p class="text-4xl mb-3">📚</p>
+                <p class="text-4xl mb-3"><span class="material-symbols-outlined text-4xl">menu_book</span></p>
                 <p class="text-lg font-semibold text-gray-700">No education NGOs registered yet</p>
                 <p class="text-gray-500">NGOs can register on the platform to appear here.</p>
             </div>
@@ -94,19 +106,19 @@
             <h3 class="text-3xl font-bold text-gray-900 mb-8">What Your Donation Supports</h3>
             <div class="grid sm:grid-cols-4 gap-4">
                 <div class="bg-white rounded-2xl p-5 shadow-md">
-                    <span class="text-3xl block mb-2">📖</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-teal-600">book</span>
                     <h4 class="font-bold text-gray-900 text-sm">Books & Stationery</h4>
                 </div>
                 <div class="bg-white rounded-2xl p-5 shadow-md">
-                    <span class="text-3xl block mb-2">👩‍🏫</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-blue-500">person_search</span>
                     <h4 class="font-bold text-gray-900 text-sm">Teacher Salaries</h4>
                 </div>
                 <div class="bg-white rounded-2xl p-5 shadow-md">
-                    <span class="text-3xl block mb-2">💻</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-purple-500">computer</span>
                     <h4 class="font-bold text-gray-900 text-sm">Digital Learning</h4>
                 </div>
                 <div class="bg-white rounded-2xl p-5 shadow-md">
-                    <span class="text-3xl block mb-2">🏫</span>
+                    <span class="material-symbols-outlined text-3xl block mb-2 text-orange-500">school</span>
                     <h4 class="font-bold text-gray-900 text-sm">Infrastructure</h4>
                 </div>
             </div>
@@ -124,7 +136,7 @@
     <div id="donateModal" class="modal">
         <div class="modal-content p-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-900">📚 Donate for Education</h3>
+                <h3 class="text-2xl font-bold text-gray-900"><span class="material-symbols-outlined">menu_book</span> Donate for Education</h3>
                 <button onclick="closeDonateModal()" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
             </div>
             <form onsubmit="submitDonation(event)">
@@ -157,11 +169,11 @@
                     </select>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-cyan-400 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition">
-                    Donate Now 📚
+                    Donate Now <span class="material-symbols-outlined">menu_book</span>
                 </button>
             </form>
             <div id="donateSuccess" style="display:none" class="text-center py-8">
-                <p class="text-5xl mb-3">🎉</p>
+                <p class="text-5xl mb-3"><span class="material-symbols-outlined text-5xl text-green-500">celebration</span></p>
                 <h4 class="text-xl font-bold text-gray-900 mb-2">Thank You!</h4>
                 <p class="text-gray-600 mb-4">Your donation will help educate underprivileged children!</p>
                 <button onclick="closeDonateModal()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold">Close</button>
@@ -192,14 +204,14 @@
                     const programs = ngo.programs || [];
                     const score = ngo.aiTrustScore || 50;
                     let badgeClass = 'bg-yellow-100 text-yellow-800 border-yellow-200';
-                    let badgeIcon = '🟡 Caution';
+                    let badgeIcon = `<span class="material-symbols-outlined text-xs">pending</span> ${t('ngo.status_caution')}`;
                     
                     if (ngo.verificationStatus === 'verified') {
                         badgeClass = 'bg-green-100 text-green-800 border-green-200';
-                        badgeIcon = '🟢 Verified';
+                        badgeIcon = `<span class="material-symbols-outlined text-xs">verified</span> ${t('ngo.status_verified')}`;
                     } else if (ngo.verificationStatus === 'suspicious') {
                         badgeClass = 'bg-red-100 text-red-800 border-red-200';
-                        badgeIcon = '🔴 Suspicious';
+                        badgeIcon = `<span class="material-symbols-outlined text-xs">warning</span> ${t('ngo.status_suspicious')}`;
                     }
 
                     const ratingCount = ngo.ratings ? ngo.ratings.length : 0;
@@ -214,17 +226,18 @@
                                     ${badgeIcon}
                                 </span>
                                 <span class="text-xs text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
-                                    AI Trust: ${score}/100
+                                    ${t('ngo.ai_trust')}: ${score}/100
                                 </span>
                             </div>
+                            </div>
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl">📚</div>
+                                <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl"><span class="material-symbols-outlined text-teal-600">menu_book</span></div>
                                 <div class="pr-20">
                                     <h4 class="font-bold text-gray-900 truncate">${ngo.name}</h4>
                                     <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                                        <span class="text-yellow-400">⭐</span>
+                                        <span class="material-symbols-outlined text-sm text-yellow-400">star</span>
                                         <span class="font-bold text-gray-700">${avgRating}</span>
-                                        <span>(${ratingCount} reviews)</span>
+                                        <span>(${ratingCount} ${t('ngo.reviews')})</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">📍 ${ngo.location.address}</p>
                                 </div>
@@ -233,13 +246,13 @@
                             
                             ${programs.length > 0 ? `
                             <div class="mb-4">
-                                <p class="text-sm font-semibold text-gray-700 mb-2">Programs:</p>
+                                <p class="text-sm font-semibold text-gray-700 mb-2">${t('ngo.programs')}</p>
                                 <div class="space-y-2">
                                     ${programs.map(p => `
                                         <div class="bg-teal-50 rounded-lg p-3 border border-teal-100">
                                             <p class="text-sm font-semibold text-teal-800">${p.name}</p>
                                             <p class="text-xs text-gray-600">${p.description || ''}</p>
-                                            ${p.beneficiaries ? `<p class="text-xs text-teal-600 mt-1 font-medium">👥 ${p.beneficiaries} beneficiaries</p>` : ''}
+                                            ${p.beneficiaries ? `<p class="text-xs text-teal-600 mt-1 font-medium"><span class="material-symbols-outlined text-xs">group</span> ${p.beneficiaries} ${t('ngo.beneficiaries')}</p>` : ''}
                                         </div>
                                     `).join('')}
                                 </div>
@@ -248,22 +261,22 @@
                             <div class="flex justify-between items-center pt-4 border-t border-gray-50">
                                 <div class="flex gap-2 text-xs font-medium">
                                     <span class="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg flex items-center gap-1">
-                                        <span>💝</span> ₹${ngo.stats.donationsReceived || 0} raised
+                                        <span class="material-symbols-outlined text-sm">favorite</span> ₹${ngo.stats.donationsReceived || 0} raised
                                     </span>
                                 </div>
-                                <button onclick="window.location.href='tel:${ngo.contactNumber}'" class="bg-gray-50 hover:bg-teal-50 text-gray-700 hover:text-teal-700 p-2 rounded-lg transition border border-gray-200 hover:border-teal-200" title="Call NGO">
-                                    📞
+                                <button onclick="window.location.href='tel:${ngo.contactNumber}'" class="bg-gray-50 hover:bg-teal-50 text-gray-700 hover:text-teal-700 p-2 rounded-lg transition border border-gray-200 hover:border-teal-200" title="${t('ngo.call')}">
+                                    <span class="material-symbols-outlined">call</span>
                                 </button>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                select.innerHTML = '<option value="">Select an NGO</option>' + data.ngos.map(ngo =>
+                select.innerHTML = `<option value="">${t('ngo.select')}</option>` + data.ngos.map(ngo =>
                     `<option value="${ngo.ngoId}">${ngo.name}</option>`
                 ).join('');
             } catch (err) {
-                document.getElementById('ngoList').innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load NGOs.</p>';
+                document.getElementById('ngoList').innerHTML = `<p class="col-span-full text-center text-red-500">${t('ngo.failed')}</p>`;
             }
         }
 
@@ -296,8 +309,19 @@
             } catch (err) { alert('Server error.'); }
         }
 
+    </script>
+    <script src="translations.js"></script>
+    <script>
         window.onclick = e => { if (e.target.id === 'donateModal') closeDonateModal(); };
-        document.addEventListener('DOMContentLoaded', loadNGOs);
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
+            loadNGOs();
+        });
+
+        // Re-render on language change
+        window.addEventListener('languageChanged', () => {
+            loadNGOs();
+        });
     </script>
 </body>
 </html>

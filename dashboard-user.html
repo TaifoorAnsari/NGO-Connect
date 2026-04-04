@@ -9,6 +9,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         :root {
             --primary: #D94A2B;
@@ -29,6 +31,10 @@
         }
 
         h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
+        .material-symbols-outlined {
+            vertical-align: middle;
+            line-height: 1;
+        }
 
         .bg-blob {
             position: fixed;
@@ -205,18 +211,23 @@
                     <h1 class="text-2xl font-bold text-gray-800">NGO-Connect</h1>
                 </div>
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="#causes" class="text-gray-700 hover:text-red-600 transition font-medium">Our Causes</a>
-                    <a href="#adoption" class="text-gray-700 hover:text-red-600 transition font-medium">Adopt</a>
-                    <a href="#reports" class="text-gray-700 hover:text-red-600 transition font-medium">Track Reports</a>
+                    <a href="#causes" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.our_causes">Our Causes</a>
+                    <a href="#adoption" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.adopt">Adopt</a>
+                    <a href="#reports" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.track_reports">Track Reports</a>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <button id="langToggleBtn" onclick="toggleLanguage()"
+                        class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="lang.toggle">
+                        <span class="material-symbols-outlined">language</span> हिंदी
+                    </button>
                     <div class="flex items-center space-x-2">
                         <div class="w-9 h-9 bg-gradient-to-br from-red-500 to-orange-400 rounded-full flex items-center justify-center">
                             <span class="text-white font-bold text-sm" id="userAvatar">U</span>
                         </div>
                         <span class="font-semibold text-gray-800" id="userName">User</span>
                     </div>
-                    <button onclick="logout()" class="text-gray-500 hover:text-red-600 transition text-sm font-medium">Logout</button>
+                    <button onclick="logout()" class="text-gray-500 hover:text-red-600 transition text-sm font-medium" data-i18n="nav.logout">Logout</button>
                 </div>
             </div>
         </nav>
@@ -226,8 +237,11 @@
     <section class="relative z-10 pt-10 pb-6 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="animate-in">
-                <h2 class="text-4xl font-bold text-gray-900 mb-2">Welcome back, <span id="welcomeName" class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">User</span>!</h2>
-                <p class="text-lg text-gray-600">Make a difference today — explore causes, adopt animals, or report emergencies.</p>
+                <h2 class="text-4xl font-bold text-gray-900 mb-2">
+                    <span data-i18n="welcome.title">Welcome back,</span> 
+                    <span id="welcomeName" class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">User</span>!
+                </h2>
+                <p class="text-lg text-gray-600" data-i18n="welcome.subtitle">Make a difference today — explore causes, adopt animals, or report emergencies.</p>
             </div>
         </div>
     </section>
@@ -236,14 +250,14 @@
     <section class="relative z-10 pb-8 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button onclick="window.location.href='index.html'" class="bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg flex items-center justify-center gap-3">
-                    🆘 Report Emergency
+                <button onclick="window.location.href='index.html'" class="bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg flex items-center justify-center gap-3" data-i18n="action.report">
+                    <span class="material-symbols-outlined">sos</span> Report Emergency
                 </button>
-                <a href="#adoption" class="bg-white border-2 border-orange-300 text-orange-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-orange-500 hover:bg-orange-50 transition shadow-sm flex items-center justify-center gap-3">
-                    🐾 Adopt a Pet
+                <a href="#adoption" class="bg-white border-2 border-orange-300 text-orange-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-orange-500 hover:bg-orange-50 transition shadow-sm flex items-center justify-center gap-3" data-i18n="action.adopt">
+                    <span class="material-symbols-outlined">pets</span> Adopt a Pet
                 </a>
-                <a href="#reports" class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3">
-                    📋 Track Reports
+                <a href="#reports" class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3" data-i18n="action.track">
+                    <span class="material-symbols-outlined">assignment</span> Track Reports
                 </a>
             </div>
         </div>
@@ -253,21 +267,21 @@
     <section id="causes" class="relative z-10 py-12 px-6 bg-white/50">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3">Our Causes</h3>
-                <p class="text-lg text-gray-600">Explore and support different NGO categories</p>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="causes.title">Our Causes</h3>
+                <p class="text-lg text-gray-600" data-i18n="causes.subtitle">Explore and support different NGO categories</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Animal Welfare -->
                 <a href="ngo-animal.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">🐾</span>
+                        <span class="material-symbols-outlined text-4xl text-red-600">pets</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Animal Welfare</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.animal_title">Animal Welfare</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.animal_desc">
                         Rescue injured animals, adopt pets, and support animal shelters with your donations.
                     </p>
-                    <span class="text-red-600 font-semibold flex items-center gap-2">
+                    <span class="text-red-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -275,13 +289,13 @@
                 <!-- Elderly Care -->
                 <a href="ngo-elderly.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">🏡</span>
+                        <span class="material-symbols-outlined text-4xl text-orange-600">home</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Elderly Care</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.elderly_title">Elderly Care</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.elderly_desc">
                         Support old age homes with donations. View beds, facilities, and contribute supplies.
                     </p>
-                    <span class="text-orange-600 font-semibold flex items-center gap-2">
+                    <span class="text-orange-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -289,13 +303,13 @@
                 <!-- Education -->
                 <a href="ngo-education.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">📚</span>
+                        <span class="material-symbols-outlined text-4xl text-teal-600">menu_book</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Education</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.education_title">Education</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.education_desc">
                         Empower underprivileged children with education. Donate for books, tuition, and resources.
                     </p>
-                    <span class="text-teal-600 font-semibold flex items-center gap-2">
+                    <span class="text-teal-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -307,17 +321,17 @@
     <section id="adoption" class="relative z-10 py-12 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3">🐾 Adopt a Pet</h3>
-                <p class="text-lg text-gray-600">Give a loving home to these adorable animals</p>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="adoption.title"><span class="material-symbols-outlined text-4xl">pets</span> Adopt a Pet</h3>
+                <p class="text-lg text-gray-600" data-i18n="adoption.subtitle">Give a loving home to these adorable animals</p>
             </div>
 
             <!-- Filter -->
             <div class="flex flex-wrap gap-3 mb-8 justify-center">
-                <button onclick="filterAnimals('')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition active">All</button>
-                <button onclick="filterAnimals('dog')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐕 Dogs</button>
-                <button onclick="filterAnimals('cat')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐱 Cats</button>
-                <button onclick="filterAnimals('bird')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐦 Birds</button>
-                <button onclick="filterAnimals('rabbit')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition">🐰 Rabbits</button>
+                <button onclick="filterAnimals('')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition active" data-i18n="adoption.all">All</button>
+                <button onclick="filterAnimals('dog')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.dogs"><span class="material-symbols-outlined text-sm">pets</span> Dogs</button>
+                <button onclick="filterAnimals('cat')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.cats"><span class="material-symbols-outlined text-sm">pets</span> Cats</button>
+                <button onclick="filterAnimals('bird')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.birds"><span class="material-symbols-outlined text-sm">flutter_dash</span> Birds</button>
+                <button onclick="filterAnimals('rabbit')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.rabbits"><span class="material-symbols-outlined text-sm">cruelty_free</span> Rabbits</button>
             </div>
 
             <div id="adoptionGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -328,7 +342,7 @@
             </div>
 
             <div id="noAnimals" style="display:none;" class="text-center py-12">
-                <p class="text-5xl mb-4">🐾</p>
+                <p class="text-5xl mb-4"><span class="material-symbols-outlined text-5xl">pets</span></p>
                 <p class="text-xl font-semibold text-gray-900 mb-2">No animals available</p>
                 <p class="text-gray-600">Check back soon — NGOs are always rescuing new animals!</p>
             </div>
@@ -339,27 +353,27 @@
     <section id="reports" class="relative z-10 py-12 px-6 bg-white/50">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3">📋 Track Your Reports</h3>
-                <p class="text-lg text-gray-600">Follow every step — from reporting to resolution</p>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="reports.title"><span class="material-symbols-outlined text-4xl">assignment</span> Track Your Reports</h3>
+                <p class="text-lg text-gray-600" data-i18n="reports.subtitle">Follow every step — from reporting to resolution</p>
             </div>
 
             <!-- Report Stats Bar -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100">
                     <p class="text-2xl font-bold text-gray-900" id="statTotal">0</p>
-                    <p class="text-xs text-gray-500 font-semibold">Total Reports</p>
+                    <p class="text-xs text-gray-500 font-semibold" data-i18n="reports.total">Total Reports</p>
                 </div>
                 <div class="bg-yellow-50 rounded-2xl p-4 shadow-sm text-center border border-yellow-100">
                     <p class="text-2xl font-bold text-yellow-700" id="statPending">0</p>
-                    <p class="text-xs text-yellow-600 font-semibold">Pending</p>
+                    <p class="text-xs text-yellow-600 font-semibold" data-i18n="reports.pending">Pending</p>
                 </div>
                 <div class="bg-blue-50 rounded-2xl p-4 shadow-sm text-center border border-blue-100">
                     <p class="text-2xl font-bold text-blue-700" id="statWorking">0</p>
-                    <p class="text-xs text-blue-600 font-semibold">Under Work</p>
+                    <p class="text-xs text-blue-600 font-semibold" data-i18n="reports.working">Under Work</p>
                 </div>
                 <div class="bg-green-50 rounded-2xl p-4 shadow-sm text-center border border-green-100">
                     <p class="text-2xl font-bold text-green-700" id="statResolved">0</p>
-                    <p class="text-xs text-green-600 font-semibold">Resolved</p>
+                    <p class="text-xs text-green-600 font-semibold" data-i18n="reports.resolved">Resolved</p>
                 </div>
             </div>
 
@@ -371,11 +385,11 @@
             </div>
 
             <div id="noReports" style="display:none;" class="text-center py-12">
-                <p class="text-5xl mb-4">📭</p>
+                <p class="text-5xl mb-4"><span class="material-symbols-outlined text-5xl">assignment_late</span></p>
                 <p class="text-xl font-semibold text-gray-900 mb-2">No reports yet</p>
                 <p class="text-gray-600">When you report an injured animal, you can track its progress here.</p>
                 <a href="index.html" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
-                    Report an Emergency 🆘
+                    Report an Emergency <span class="material-symbols-outlined">sos</span>
                 </a>
             </div>
         </div>
@@ -384,7 +398,7 @@
     <!-- Footer -->
     <footer class="relative z-10 bg-gray-900 text-white py-10 px-6">
         <div class="container mx-auto max-w-6xl text-center">
-            <p class="text-gray-400">&copy; 2024 NGO-Connect. All rights reserved. Built with ❤️ for making a difference.</p>
+            <p class="text-gray-400">&copy; 2024 NGO-Connect. All rights reserved. Built with <span class="material-symbols-outlined text-sm">favorite</span> for making a difference.</p>
         </div>
     </footer>
 
@@ -464,16 +478,16 @@
                         <div class="flex justify-between items-start mb-2">
                             <h4 class="text-lg font-bold text-gray-900">${animal.name}</h4>
                             <span class="text-xs px-2 py-1 rounded-full ${animal.vaccinated ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                                ${animal.vaccinated ? '💉 Vaccinated' : '⚠️ Not Vaccinated'}
+                                ${animal.vaccinated ? t('adoption.vaccinated') : t('adoption.not_vaccinated')}
                             </span>
                         </div>
                         <p class="text-sm text-gray-500 mb-1">${animal.breed} · ${animal.age} · ${animal.gender}</p>
                         <p class="text-sm text-gray-600 mb-3 line-clamp-2">${animal.description}</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-xs text-gray-400">By ${animal.listedByNGOName}</span>
+                            <span class="text-xs text-gray-400">${t('adoption.by')} ${animal.listedByNGOName}</span>
                             <button onclick="openAdoptModal('${animal.animalId}', '${animal.name}')"
                                     class="px-4 py-2 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition">
-                                Adopt 🐾
+                                ${t('adoption.adopt_btn')}
                             </button>
                         </div>
                     </div>
@@ -485,17 +499,17 @@
             const modal = document.getElementById('adoptModal');
             document.getElementById('adoptModalBody').innerHTML = `
                 <div class="text-center">
-                    <p class="text-5xl mb-4">🐾</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Adopt ${name}?</h3>
-                    <p class="text-gray-600 mb-6">By confirming, you'll be registered as the adopter. The NGO will contact you for further procedures.</p>
+                    <p class="text-5xl mb-4"><span class="material-symbols-outlined text-5xl">pets</span></p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">${t('adoption.confirm_title')} ${name}?</h3>
+                    <p class="text-gray-600 mb-6">${t('adoption.confirm_msg')}</p>
                     <div class="flex gap-3 justify-center">
                         <button onclick="confirmAdopt('${animalId}')"
                                 class="px-8 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
-                            Yes, Adopt! ❤️
+                            ${t('adoption.confirm_yes')}
                         </button>
                         <button onclick="closeAdoptModal()"
                                 class="px-8 py-3 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">
-                            Cancel
+                            ${t('adoption.confirm_cancel')}
                         </button>
                     </div>
                 </div>
@@ -526,12 +540,12 @@
 
                 document.getElementById('adoptModalBody').innerHTML = `
                     <div class="text-center py-4">
-                        <p class="text-5xl mb-4">🎉</p>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Adoption Successful!</h3>
-                        <p class="text-gray-600 mb-6">${data.message} The NGO will contact you soon.</p>
+                        <p class="text-5xl mb-4"><span class="material-symbols-outlined text-5xl">celebration</span></p>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">${t('adoption.success_title')}</h3>
+                        <p class="text-gray-600 mb-6">${t('adoption.success_msg')}</p>
                         <button onclick="closeAdoptModal(); loadAdoptionAnimals();"
                                 class="px-8 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition">
-                            Great! 🎊
+                            ${t('adoption.success_btn')}
                         </button>
                     </div>
                 `;
@@ -543,10 +557,10 @@
         // ========== REPORT TRACKER ==========
         // Status progression: pending → assigned → in-progress → completed
         const TRACKING_STEPS = [
-            { key: 'pending',     icon: '📝', label: 'Reported',   desc: 'Your report has been submitted' },
-            { key: 'assigned',    icon: '✅', label: 'Accepted',   desc: 'An NGO has accepted your report' },
-            { key: 'in-progress', icon: '🔧', label: 'Under Work', desc: 'The NGO is working on rescue' },
-            { key: 'completed',   icon: '🎉', label: 'Resolved',   desc: 'The rescue is complete' }
+            { key: 'pending',     icon: '<span class="material-symbols-outlined">assignment</span>', label: t('reports.step_reported'),   desc: 'Your report has been submitted' },
+            { key: 'assigned',    icon: '<span class="material-symbols-outlined">check_circle</span>', label: t('reports.step_accepted'),   desc: 'An NGO has accepted your report' },
+            { key: 'in-progress', icon: '<span class="material-symbols-outlined">engineering</span>', label: t('reports.step_working'), desc: 'The NGO is working on rescue' },
+            { key: 'completed',   icon: '<span class="material-symbols-outlined">celebration</span>', label: t('reports.step_resolved'),   desc: 'The rescue is complete' }
         ];
 
         function getStepIndex(status) {
@@ -612,23 +626,23 @@
                     <div class="report-detail-toggle p-5 flex gap-4 items-start" onclick="toggleReportDetail('${report.reportId}')">
                         <img src="${API_BASE}${report.photoUrl}" alt="Report"
                              class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
-                             onerror="this.src='https://via.placeholder.com/80?text=🐾'">
+                             onerror="this.src='https://via.placeholder.com/80?text=Animal'">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between mb-1">
                                 <h4 class="font-bold text-gray-900 text-lg">Report #${report.reportId}</h4>
                                 <span class="status-badge ${statusInfo.class}">${statusInfo.text}</span>
                             </div>
                             <p class="text-gray-600 text-sm truncate">${report.description}</p>
-                            <p class="text-xs text-gray-400 mt-1">📍 ${report.location.address} · 🕐 ${date}</p>
+                            <p class="text-xs text-gray-400 mt-1"><span class="material-symbols-outlined text-xs">location_on</span> ${report.location.address} · <span class="material-symbols-outlined text-xs">schedule</span> ${date}</p>
                         </div>
-                        <span class="text-gray-400 text-xl mt-2 flex-shrink-0 transition-transform" id="arrow-${report.reportId}">▼</span>
+                        <span class="material-symbols-outlined text-gray-400 mt-2 flex-shrink-0 transition-transform" id="arrow-${report.reportId}">expand_more</span>
                     </div>
 
                     <!-- Expandable Detail with Tracker -->
                     <div id="detail-${report.reportId}" style="display:none;" class="border-t border-gray-100">
                         <!-- Visual Stepper -->
                         <div class="px-6 py-6 bg-gray-50/50">
-                            <p class="text-sm font-bold text-gray-700 mb-5 text-center">📡 Tracking Progress</p>
+                            <p class="text-sm font-bold text-gray-700 mb-5 text-center"><span class="material-symbols-outlined text-sm">track_changes</span> Tracking Progress</p>
                             <div class="flex items-start justify-between px-2">
                                 ${stepsHTML}
                             </div>
@@ -649,7 +663,7 @@
                                     report.status === 'assigned' ? 'text-teal-800' :
                                     'text-yellow-800'
                                 } mb-1">${TRACKING_STEPS[currentIdx].icon} ${TRACKING_STEPS[currentIdx].desc}</p>
-                                ${report.assignedNGOName ? `<p class="text-sm text-gray-700">🏥 <strong>${report.assignedNGOName}</strong> is handling this report</p>` : ''}
+                                ${report.assignedNGOName ? `<p class="text-sm text-gray-700"><span class="material-symbols-outlined text-sm">domain</span> <strong>${report.assignedNGOName}</strong> is handling this report</p>` : ''}
                                 <p class="text-xs text-gray-500 mt-2">Last updated: ${updatedDate}</p>
                             </div>` : `
                             <div class="bg-red-50 rounded-xl p-4 border border-red-200">
@@ -797,8 +811,12 @@
             }
         }
 
+    </script>
+    <script src="translations.js"></script>
+    <script>
         // Init
         document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations();
             loadAdoptionAnimals();
             loadMyReports();
         });

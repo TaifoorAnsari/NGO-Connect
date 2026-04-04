@@ -9,6 +9,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         :root {
             --primary: #D94A2B;
@@ -33,13 +35,12 @@
             overflow-x: hidden;
         }
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
         h6 {
             font-family: 'Syne', sans-serif;
+        }
+        .material-symbols-outlined {
+            vertical-align: middle;
+            line-height: 1;
         }
 
         /* Animated Background Blob */
@@ -441,16 +442,21 @@
                     <h1 class="text-2xl font-bold text-gray-800">NGO-Connect</h1>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#categories" class="text-gray-700 hover:text-red-600 transition font-medium">Categories</a>
-                    <a href="#how-it-works" class="text-gray-700 hover:text-red-600 transition font-medium">How It
+                    <a href="#categories" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.our_causes">Our Causes</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.how_it_works">How It
                         Works</a>
-                    <a href="#impact" class="text-gray-700 hover:text-red-600 transition font-medium">Impact</a>
+                    <a href="#impact" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.impact">Impact</a>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <button id="langToggleBtn" onclick="toggleLanguage()"
+                        class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="lang.toggle">
+                        <span class="material-symbols-outlined">language</span> हिंदी
+                    </button>
                     <button onclick="openAuthModal('login')"
-                        class="text-gray-700 hover:text-red-600 transition font-medium">Login</button>
+                        class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.login">Login</button>
                     <button onclick="openAuthModal('signup')"
-                        class="bg-gradient-to-r from-red-500 to-orange-400 text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-lg transition pulse-button">
+                        class="bg-gradient-to-r from-red-500 to-orange-400 text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-lg transition pulse-button" data-i18n="nav.signup">
                         Sign Up
                     </button>
                 </div>
@@ -463,24 +469,24 @@
         <div class="container mx-auto max-w-6xl">
             <div class="hero-content text-center">
                 <div class="inline-block mb-6 px-6 py-2 bg-red-100 rounded-full">
-                    <span class="text-red-600 font-semibold text-sm">🚨 Emergency Response Platform</span>
+                    <span class="text-red-600 font-semibold text-sm"><span class="material-symbols-outlined text-sm">emergency</span> Emergency Response Platform</span>
                 </div>
-                <h2 class="text-6xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
+                <h2 class="text-6xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight" data-i18n="hero.title">
                     Connect.<br />
                     <span class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">Care.</span>
                     Change.
                 </h2>
-                <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+                <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed" data-i18n="hero.subtitle">
                     A unified ecosystem connecting civilians with NGOs for instant rescue responses,
                     community support, and meaningful impact.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                     <button onclick="openReportModal()"
-                        class="quick-report-btn bg-red-600 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-red-700 transition shadow-2xl">
-                        🆘 Quick Report - Injured Animal
+                        class="quick-report-btn bg-red-600 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-red-700 transition shadow-2xl" data-i18n="hero.report_btn">
+                        <span class="material-symbols-outlined">sos</span> Quick Report - Injured Animal
                     </button>
                     <button onclick="openAuthModal('ngo')"
-                        class="bg-white border-2 border-gray-300 text-gray-800 px-10 py-5 rounded-full font-bold text-lg hover:border-red-500 transition">
+                        class="bg-white border-2 border-gray-300 text-gray-800 px-10 py-5 rounded-full font-bold text-lg hover:border-red-500 transition" data-i18n="hero.dashboard_btn">
                         NGO Dashboard →
                     </button>
                 </div>
@@ -508,8 +514,8 @@
     <section id="categories" class="relative z-10 py-20 px-6 bg-white/50">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-16">
-                <h3 class="text-5xl font-bold text-gray-900 mb-4">Our Causes</h3>
-                <p class="text-xl text-gray-600">Choose a category to make a difference</p>
+                <h3 class="text-5xl font-bold text-gray-900 mb-4" data-i18n="causes.title">Our Causes</h3>
+                <p class="text-xl text-gray-600" data-i18n="causes.subtitle">Choose a category to make a difference</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -517,13 +523,13 @@
                 <a href="ngo-animal.html"
                     class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
                     <div class="category-icon w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">🐾</span>
+                        <span class="material-symbols-outlined text-4xl text-red-600">pets</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Animal Welfare</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.animal_title">Animal Welfare</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.animal_desc">
                         Instant rescue alerts for injured animals. Adopt pets and support animal shelters.
                     </p>
-                    <span class="text-red-600 font-semibold flex items-center gap-2">
+                    <span class="text-red-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -533,13 +539,13 @@
                     class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
                     <div
                         class="category-icon w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">🏡</span>
+                        <span class="material-symbols-outlined text-4xl text-orange-600">home</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Elderly Care</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.elderly_title">Elderly Care</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.elderly_desc">
                         Support old age homes with donations. View beds, facilities, and contribute supplies.
                     </p>
-                    <span class="text-orange-600 font-semibold flex items-center gap-2">
+                    <span class="text-orange-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -548,13 +554,13 @@
                 <a href="ngo-education.html"
                     class="category-card stagger-item bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
                     <div class="category-icon w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="text-4xl">📚</span>
+                        <span class="material-symbols-outlined text-4xl text-teal-600">menu_book</span>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3">Education</h4>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.education_title">Education</h4>
+                    <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.education_desc">
                         Empower underprivileged children with education. Donate for books, tuition, and resources.
                     </p>
-                    <span class="text-teal-600 font-semibold flex items-center gap-2">
+                    <span class="text-teal-600 font-semibold flex items-center gap-2" data-i18n="causes.explore">
                         Explore →
                     </span>
                 </a>
@@ -640,7 +646,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 NGO-Connect. All rights reserved. Built with ❤️ for making a difference.</p>
+                <p>&copy; 2024 NGO-Connect. All rights reserved. Built with <span class="material-symbols-outlined text-sm">favorite</span> for making a difference.</p>
             </div>
         </div>
     </footer>
@@ -691,7 +697,7 @@
                                     placeholder="Auto-detecting..." readonly>
                                 <button type="button" onclick="getLocation()"
                                     class="bg-teal-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-600 transition">
-                                    📍 Get Location
+                                    <span class="material-symbols-outlined">location_on</span> Get Location
                                 </button>
                             </div>
                             <p class="text-sm text-gray-500 mt-2">We'll use your location to alert nearby NGOs</p>
@@ -708,8 +714,9 @@
 
                         <div class="flex gap-4">
                             <button type="submit"
+                                id="submitReportBtn"
                                 class="flex-1 bg-red-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition">
-                                Submit Report 🚨
+                                Submit Report <span class="material-symbols-outlined">sos</span>
                             </button>
                             <button type="button" onclick="closeReportModal()"
                                 class="px-8 py-4 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">
@@ -797,11 +804,17 @@
         </div>
     </div>
 
-    <script src="main.js">
+    <script src="translations.js"></script>
+    <script src="main.js"></script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
-            checkReportStatus();
+            applyTranslations();
+            // checkReportStatus(); 
         });
 
+        window.addEventListener('languageChanged', () => {
+            applyTranslations();
+        });
     </script>
 </body>
 
