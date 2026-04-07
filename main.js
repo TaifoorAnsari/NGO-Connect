@@ -222,8 +222,13 @@ async function submitReport(event) {
         }
 
         const data = await response.json();
-        console.log('✅ Report submitted successfully:', data);
+        console.log('Report submitted successfully:', data);
         localStorage.setItem('lastReportId', data.report.reportId);
+
+        // Store reward data for dashboard notification
+        if (data.reward) {
+            localStorage.setItem('pendingReward', JSON.stringify(data.reward));
+        }
 
         document.getElementById('reportForm').style.display = 'none';
         document.getElementById('reportSuccess').style.display = 'block';

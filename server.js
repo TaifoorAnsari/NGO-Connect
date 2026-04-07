@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 require('dotenv').config();
 
 const app = express();
@@ -272,6 +274,29 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AdoptionAnimal'
     }],
+    // ---- REWARD SYSTEM ----
+    rewardPoints: {
+        type: Number,
+        default: 0
+    },
+    rewardLevel: {
+        type: String,
+        enum: ['None', 'Bronze', 'Silver', 'Gold'],
+        default: 'None'
+    },
+    rewardHistory: [{
+        action: { type: String, required: true },
+        points: { type: Number, required: true },
+        description: { type: String },
+        createdAt: { type: Date, default: Date.now }
+    }],
+    certificatesEarned: [{
+        milestone: { type: String },
+        title: { type: String },
+        earnedAt: { type: Date, default: Date.now },
+        downloaded: { type: Boolean, default: false }
+    }],
+    // -----------------------
     createdAt: {
         type: Date,
         default: Date.now
@@ -488,6 +513,82 @@ async function sendWhatsAppNotification(phone, message) {
 }
 
 // ============================================================
+//  REWARD SYSTEM HELPERS
+// ============================================================
+
+const REWARD_MILESTONES = [
+    { points: 100, level: 'Bronze', title: 'Community Helper' },
+    { points: 300, level: 'Silver', title: 'Impact Champion' },
+    { points: 500, level: 'Gold', title: 'Social Impact Contributor' }
+];
+
+const REWARD_POINTS = {
+    'report_animal': 25,
+    'donate': 50,
+    'adopt_animal': 75,
+    'volunteer': 40
+};
+
+async function awardPoints(userId, action, description) {
+    try {
+        const points = REWARD_POINTS[action];
+        if (!points) return null;
+
+        const user = await User.findOne({ userId });
+        if (!user) return null;
+
+        const oldPoints = user.rewardPoints || 0;
+        const newPoints = oldPoints + points;
+
+        // Add to history
+        user.rewardHistory.push({
+            action,
+            points,
+            description: description || action.replace(/_/g, ' ')
+        });
+
+        user.rewardPoints = newPoints;
+
+        // Check milestones
+        let newMilestone = null;
+        for (const milestone of REWARD_MILESTONES) {
+            if (oldPoints < milestone.points && newPoints >= milestone.points) {
+                // User just crossed this milestone
+                user.rewardLevel = milestone.level;
+                newMilestone = milestone;
+
+                // Add certificate record if not already earned
+                const alreadyEarned = user.certificatesEarned.some(c => c.milestone === milestone.level);
+                if (!alreadyEarned) {
+                    user.certificatesEarned.push({
+                        milestone: milestone.level,
+                        title: milestone.title
+                    });
+                }
+            }
+        }
+
+        // Also set level based on current points (in case points were added out of order)
+        if (newPoints >= 500) user.rewardLevel = 'Gold';
+        else if (newPoints >= 300) user.rewardLevel = 'Silver';
+        else if (newPoints >= 100) user.rewardLevel = 'Bronze';
+        else user.rewardLevel = 'None';
+
+        await user.save();
+
+        return {
+            pointsAwarded: points,
+            totalPoints: newPoints,
+            level: user.rewardLevel,
+            newMilestone: newMilestone
+        };
+    } catch (error) {
+        console.error('Error awarding points:', error);
+        return null;
+    }
+}
+
+// ============================================================
 //  API ROUTES
 // ============================================================
 
@@ -614,6 +715,12 @@ app.post('/api/reports', upload.single('photo'), async (req, res) => {
 
         console.log(`📢 Notifying ${nearbyNGOs.length} nearby NGOs about rescue report ${report.reportId}`);
 
+        // Award reward points for reporting
+        let rewardResult = null;
+        if (userId) {
+            rewardResult = await awardPoints(userId, 'report_animal', `Reported injured ${animalType}`);
+        }
+
         res.status(201).json({
             success: true,
             message: 'Report submitted successfully',
@@ -622,7 +729,8 @@ app.post('/api/reports', upload.single('photo'), async (req, res) => {
                 status: report.status,
                 createdAt: report.createdAt
             },
-            notifiedNGOs: nearbyNGOs.length
+            notifiedNGOs: nearbyNGOs.length,
+            reward: rewardResult
         });
 
     } catch (error) {
@@ -1065,10 +1173,17 @@ app.post('/api/adoptions/:animalId/adopt', async (req, res) => {
             );
         }
 
+        // Award reward points for adoption
+        let rewardResult = null;
+        if (userId) {
+            rewardResult = await awardPoints(userId, 'adopt_animal', `Adopted ${animal.name}`);
+        }
+
         res.json({
             success: true,
             message: `${animal.name} has been adopted!`,
-            animal
+            animal,
+            reward: rewardResult
         });
 
     } catch (error) {
@@ -1111,25 +1226,75 @@ app.post('/api/donations', async (req, res) => {
 
         await donation.save();
 
-        // Update NGO donation stats
+        // Update NGO donation stats safely without full validation trigger
         if (ngo) {
-            ngo.stats.donationsReceived = (ngo.stats.donationsReceived || 0) + amount;
-            await ngo.save();
+            await NGO.findOneAndUpdate(
+                { ngoId: ngo.ngoId },
+                { $inc: { 'stats.donationsReceived': amount } },
+                { new: true, setDefaultsOnInsert: true }
+            );
         }
 
-        res.status(201).json({
-            success: true,
-            message: 'Donation recorded',
-            donation: {
-                donationId: donation.donationId,
-                amount: donation.amount,
-                ngoName
-            }
+        // Generate Receipt PDF
+        const doc = new PDFDocument();
+        const receiptFileName = `receipt-${donation.donationId}.pdf`;
+        const receiptPath = path.join(__dirname, 'uploads', receiptFileName);
+        const writeStream = fs.createWriteStream(receiptPath);
+        
+        doc.pipe(writeStream);
+        
+        doc.fontSize(24).fillColor('#D94A2B').text('NGO-Connect', { align: 'center' });
+        doc.fontSize(16).fillColor('#2D3142').text('Donation Receipt', { align: 'center' });
+        doc.moveDown();
+        
+        doc.fontSize(12).fillColor('#2D3142');
+        doc.text(`Receipt No: ${donation.donationId}`);
+        doc.text(`Date: ${donation.createdAt.toLocaleDateString()}`);
+        doc.moveDown();
+        doc.text(`Donor Name: ${donation.donorName}`);
+        doc.text(`Donor Email: ${donation.donorEmail}`);
+        doc.text(`NGO Supported: ${ngoName}`);
+        doc.text(`Cause: ${ngoType}`);
+        doc.moveDown();
+        
+        doc.fontSize(14).fillColor('#000000').text(`Amount Donated: Rs. ${donation.amount}`, { underline: true });
+        doc.moveDown();
+        doc.fontSize(12).fillColor('#2D3142').text(`Purpose: ${donation.purpose}`);
+        
+        doc.moveDown(2);
+        doc.fontSize(14).fillColor('#4ECDC4').text('Thank you for your generous contribution!', { align: 'center' });
+        
+        doc.end();
+
+        // Award reward points for donation
+        let rewardResult = null;
+        const donorUserId = req.body.userId;
+        if (donorUserId) {
+            rewardResult = await awardPoints(donorUserId, 'donate', `Donated Rs.${amount} to ${ngoName}`);
+        }
+
+        writeStream.on('finish', () => {
+            res.status(201).json({
+                success: true,
+                message: 'Donation recorded',
+                donation: {
+                    donationId: donation.donationId,
+                    amount: donation.amount,
+                    ngoName
+                },
+                receiptUrl: `/uploads/${receiptFileName}`,
+                reward: rewardResult
+            });
+        });
+
+        writeStream.on('error', (err) => {
+            console.error('PDF error:', err);
+            res.status(500).json({ error: 'Failed to generate receipt PDF' });
         });
 
     } catch (error) {
         console.error('Error recording donation:', error);
-        res.status(500).json({ error: 'Failed to record donation' });
+        res.status(500).json({ error: error.message || 'Failed to record donation' });
     }
 });
 
@@ -1299,6 +1464,137 @@ app.post('/api/ngos/:ngoId/verify', async (req, res) => {
         res.json({ success: true, aiTrustScore: ngo.aiTrustScore, verificationStatus: ngo.verificationStatus });
     } catch (error) {
         res.status(500).json({ error: 'Failed to verify NGO' });
+    }
+});
+
+// ============================================================
+
+// ============ REWARD SYSTEM API ============
+
+// Get user rewards / points
+app.get('/api/users/:userId/rewards', async (req, res) => {
+    try {
+        const user = await User.findOne({ userId: req.params.userId }).select('rewardPoints rewardLevel rewardHistory certificatesEarned name');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Calculate next milestone
+        let nextMilestone = null;
+        for (const ms of REWARD_MILESTONES) {
+            if (user.rewardPoints < ms.points) {
+                nextMilestone = {
+                    level: ms.level,
+                    pointsNeeded: ms.points - user.rewardPoints,
+                    totalNeeded: ms.points
+                };
+                break;
+            }
+        }
+
+        res.json({
+            success: true,
+            rewards: {
+                totalPoints: user.rewardPoints || 0,
+                level: user.rewardLevel || 'None',
+                history: (user.rewardHistory || []).slice().reverse(),
+                certificates: user.certificatesEarned || [],
+                nextMilestone,
+                milestones: REWARD_MILESTONES
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching rewards:', error);
+        res.status(500).json({ error: 'Failed to fetch rewards' });
+    }
+});
+
+// Generate / Download certificate PDF
+app.get('/api/users/:userId/certificate/:milestone', async (req, res) => {
+    try {
+        const user = await User.findOne({ userId: req.params.userId });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const milestone = req.params.milestone;
+        const milestoneInfo = REWARD_MILESTONES.find(m => m.level === milestone);
+        if (!milestoneInfo) {
+            return res.status(400).json({ error: 'Invalid milestone' });
+        }
+
+        if (user.rewardPoints < milestoneInfo.points) {
+            return res.status(403).json({ error: 'Milestone not yet reached' });
+        }
+
+        const certRecord = user.certificatesEarned.find(c => c.milestone === milestone);
+        const earnedDate = certRecord ? certRecord.earnedAt : new Date();
+
+        // Generate Certificate PDF
+        const doc = new PDFDocument({
+            size: 'A4',
+            layout: 'landscape',
+            margins: { top: 50, bottom: 50, left: 60, right: 60 }
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=certificate-${milestone.toLowerCase()}-${user.userId}.pdf`);
+
+        doc.pipe(res);
+
+        // -- Certificate Design --
+        // Border
+        const badgeColors = { Bronze: '#CD7F32', Silver: '#C0C0C0', Gold: '#FFD700' };
+        const accentColor = badgeColors[milestone] || '#D94A2B';
+
+        doc.rect(30, 30, doc.page.width - 60, doc.page.height - 60)
+           .lineWidth(3)
+           .strokeColor(accentColor)
+           .stroke();
+
+        doc.rect(40, 40, doc.page.width - 80, doc.page.height - 80)
+           .lineWidth(1)
+           .strokeColor('#E5E7EB')
+           .stroke();
+
+        // Header
+        doc.moveDown(2);
+        doc.fontSize(14).fillColor('#9CA3AF').text('NGO-CONNECT', { align: 'center' });
+        doc.moveDown(0.5);
+        doc.fontSize(36).fillColor('#2D3142').text('Certificate of Achievement', { align: 'center' });
+        doc.moveDown(0.3);
+
+        // Decorative line
+        const centerX = doc.page.width / 2;
+        doc.moveTo(centerX - 100, doc.y).lineTo(centerX + 100, doc.y)
+           .lineWidth(2).strokeColor(accentColor).stroke();
+
+        doc.moveDown(1.5);
+        doc.fontSize(14).fillColor('#6B7280').text('This certificate is proudly presented to', { align: 'center' });
+        doc.moveDown(0.8);
+        doc.fontSize(30).fillColor(accentColor).text(user.name, { align: 'center' });
+        doc.moveDown(1);
+        doc.fontSize(14).fillColor('#6B7280').text('In recognition of achieving the', { align: 'center' });
+        doc.moveDown(0.5);
+        doc.fontSize(24).fillColor('#2D3142').text(`${milestone} Badge - ${milestoneInfo.title}`, { align: 'center' });
+        doc.moveDown(0.8);
+        doc.fontSize(12).fillColor('#9CA3AF').text(`With ${milestoneInfo.points}+ reward points earned through acts of compassion and service`, { align: 'center' });
+        doc.moveDown(1.5);
+
+        // Date
+        const dateStr = new Date(earnedDate).toLocaleDateString('en-IN', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        });
+        doc.fontSize(12).fillColor('#6B7280').text(`Awarded on: ${dateStr}`, { align: 'center' });
+
+        doc.moveDown(2);
+        doc.fontSize(10).fillColor('#D1D5DB').text('Verified by NGO-Connect Platform', { align: 'center' });
+
+        doc.end();
+
+    } catch (error) {
+        console.error('Error generating certificate:', error);
+        res.status(500).json({ error: 'Failed to generate certificate' });
     }
 });
 

@@ -193,6 +193,48 @@
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
+
+        /* Reward Notification Toast */
+        .reward-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: white;
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border-left: 4px solid #52B788;
+            transform: translateX(120%);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 360px;
+        }
+        .reward-toast.show {
+            transform: translateX(0);
+        }
+        .reward-toast.milestone {
+            border-left-color: #FFD700;
+        }
+
+        /* Badge shimmer */
+        .badge-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .badge-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
     </style>
 </head>
 
@@ -259,6 +301,154 @@
                 <a href="#reports" class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3" data-i18n="action.track">
                     <span class="material-symbols-outlined">assignment</span> Track Reports
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reward Toast Container -->
+    <div id="rewardToast" class="reward-toast">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl text-green-600" id="toastIcon">stars</span>
+            <div>
+                <p class="font-bold text-gray-900 text-sm" id="toastTitle">Points Earned!</p>
+                <p class="text-gray-600 text-xs" id="toastMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rewards & Badges Section -->
+    <section id="rewards" class="relative z-10 pb-8 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-8">
+                <h3 class="text-4xl font-bold text-gray-900 mb-3"><span class="material-symbols-outlined text-4xl">military_tech</span> Rewards & Badges</h3>
+                <p class="text-lg text-gray-600">Earn points for making a positive impact</p>
+            </div>
+
+            <!-- Points Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Points Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center badge-shimmer">
+                        <span class="material-symbols-outlined text-3xl text-white">stars</span>
+                    </div>
+                    <p class="text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" id="rewardTotalPoints">0</p>
+                    <p class="text-gray-500 font-semibold text-sm mt-1">Total Points</p>
+                </div>
+
+                <!-- Current Badge Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" id="currentBadgeIcon" style="background: linear-gradient(135deg, #E5E7EB, #D1D5DB)">
+                        <span class="material-symbols-outlined text-3xl text-white">military_tech</span>
+                    </div>
+                    <p class="text-2xl font-extrabold text-gray-900" id="currentBadgeLevel">No Badge</p>
+                    <p class="text-gray-500 font-semibold text-sm mt-1">Current Level</p>
+                </div>
+
+                <!-- Next Milestone Card -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl text-white">flag</span>
+                    </div>
+                    <p class="text-2xl font-extrabold text-gray-900" id="nextMilestoneText">Bronze</p>
+                    <p class="text-gray-500 font-semibold text-sm mt-1" id="nextMilestonePoints">100 pts to go</p>
+                    <!-- Progress Bar -->
+                    <div class="mt-3 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-1000" id="milestoneProgress" style="width: 0%; background: linear-gradient(90deg, #4ECDC4, #2ECC71)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestones -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Bronze -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Bronze">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #CD7F32, #A0522D)">
+                            <span class="material-symbols-outlined text-xl text-white">military_tech</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900">Bronze Badge</p>
+                            <p class="text-xs text-gray-500">100 Points - Community Helper</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Bronze">Locked</span>
+                        <button onclick="downloadCertificate('Bronze')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Bronze">
+                            <span class="material-symbols-outlined text-xs">download</span> Certificate
+                        </button>
+                    </div>
+                </div>
+                <!-- Silver -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Silver">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8)">
+                            <span class="material-symbols-outlined text-xl text-white">military_tech</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900">Silver Badge</p>
+                            <p class="text-xs text-gray-500">300 Points - Impact Champion</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Silver">Locked</span>
+                        <button onclick="downloadCertificate('Silver')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Silver">
+                            <span class="material-symbols-outlined text-xs">download</span> Certificate
+                        </button>
+                    </div>
+                </div>
+                <!-- Gold -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Gold">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #FFD700, #DAA520)">
+                            <span class="material-symbols-outlined text-xl text-white">military_tech</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-900">Gold Badge</p>
+                            <p class="text-xs text-gray-500">500 Points - Social Impact Contributor</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Gold">Locked</span>
+                        <button onclick="downloadCertificate('Gold')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Gold">
+                            <span class="material-symbols-outlined text-xs">download</span> Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points Earning Guide -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">info</span> How to Earn Points</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-3 bg-red-50 rounded-xl">
+                        <span class="material-symbols-outlined text-2xl text-red-600">sos</span>
+                        <p class="font-bold text-gray-900 mt-1">+25 pts</p>
+                        <p class="text-xs text-gray-500">Report Animal</p>
+                    </div>
+                    <div class="text-center p-3 bg-green-50 rounded-xl">
+                        <span class="material-symbols-outlined text-2xl text-green-600">volunteer_activism</span>
+                        <p class="font-bold text-gray-900 mt-1">+50 pts</p>
+                        <p class="text-xs text-gray-500">Donate to NGO</p>
+                    </div>
+                    <div class="text-center p-3 bg-orange-50 rounded-xl">
+                        <span class="material-symbols-outlined text-2xl text-orange-600">pets</span>
+                        <p class="font-bold text-gray-900 mt-1">+75 pts</p>
+                        <p class="text-xs text-gray-500">Adopt Animal</p>
+                    </div>
+                    <div class="text-center p-3 bg-blue-50 rounded-xl">
+                        <span class="material-symbols-outlined text-2xl text-blue-600">group</span>
+                        <p class="font-bold text-gray-900 mt-1">+40 pts</p>
+                        <p class="text-xs text-gray-500">Volunteer</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Points History -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">history</span> Points History</p>
+                <div id="pointsHistory" class="space-y-3">
+                    <p class="text-gray-400 text-center py-4">No points earned yet. Start making an impact!</p>
+                </div>
             </div>
         </div>
     </section>
@@ -549,9 +739,158 @@
                         </button>
                     </div>
                 `;
+
+                // Show reward notification
+                handleRewardResponse(data);
             } catch (err) {
                 alert('Failed to process adoption. Check server.');
             }
+        }
+
+        // ========== REWARD SYSTEM ==========
+        function showRewardToast(title, message, isMilestone = false) {
+            const toast = document.getElementById('rewardToast');
+            const toastIcon = document.getElementById('toastIcon');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+
+            if (isMilestone) {
+                toast.classList.add('milestone');
+                toastIcon.textContent = 'emoji_events';
+                toastIcon.className = 'material-symbols-outlined text-2xl text-yellow-500';
+            } else {
+                toast.classList.remove('milestone');
+                toastIcon.textContent = 'stars';
+                toastIcon.className = 'material-symbols-outlined text-2xl text-green-600';
+            }
+
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        function handleRewardResponse(data) {
+            if (data && data.reward) {
+                const r = data.reward;
+                showRewardToast(
+                    `+${r.pointsAwarded} Points Earned!`,
+                    `Total: ${r.totalPoints} pts | Level: ${r.level}`
+                );
+
+                if (r.newMilestone) {
+                    setTimeout(() => {
+                        showRewardToast(
+                            `${r.newMilestone.level} Badge Unlocked!`,
+                            `Congratulations! You earned the ${r.newMilestone.title} certificate!`,
+                            true
+                        );
+                    }, 5500);
+                }
+
+                // Refresh rewards display
+                loadRewards();
+            }
+        }
+
+        async function loadRewards() {
+            try {
+                const res = await fetch(`${API_BASE}/api/users/${userId}/rewards`);
+                const data = await res.json();
+
+                if (!data.success) return;
+
+                const rewards = data.rewards;
+
+                // Update total points
+                document.getElementById('rewardTotalPoints').textContent = rewards.totalPoints;
+
+                // Update current badge
+                const badgeColors = {
+                    'None': 'linear-gradient(135deg, #E5E7EB, #D1D5DB)',
+                    'Bronze': 'linear-gradient(135deg, #CD7F32, #A0522D)',
+                    'Silver': 'linear-gradient(135deg, #C0C0C0, #A8A8A8)',
+                    'Gold': 'linear-gradient(135deg, #FFD700, #DAA520)'
+                };
+                document.getElementById('currentBadgeLevel').textContent = rewards.level === 'None' ? 'No Badge' : rewards.level + ' Badge';
+                document.getElementById('currentBadgeIcon').style.background = badgeColors[rewards.level] || badgeColors['None'];
+
+                // Update next milestone
+                if (rewards.nextMilestone) {
+                    document.getElementById('nextMilestoneText').textContent = rewards.nextMilestone.level;
+                    document.getElementById('nextMilestonePoints').textContent = `${rewards.nextMilestone.pointsNeeded} pts to go`;
+
+                    const progress = ((rewards.nextMilestone.totalNeeded - rewards.nextMilestone.pointsNeeded) / rewards.nextMilestone.totalNeeded) * 100;
+                    setTimeout(() => {
+                        document.getElementById('milestoneProgress').style.width = progress + '%';
+                    }, 300);
+                } else {
+                    document.getElementById('nextMilestoneText').textContent = 'Max Level!';
+                    document.getElementById('nextMilestonePoints').textContent = 'All milestones reached';
+                    document.getElementById('milestoneProgress').style.width = '100%';
+                }
+
+                // Update milestone cards
+                const milestoneThresholds = { Bronze: 100, Silver: 300, Gold: 500 };
+                ['Bronze', 'Silver', 'Gold'].forEach(level => {
+                    const statusEl = document.getElementById(`badge-status-${level}`);
+                    const certBtn = document.getElementById(`cert-btn-${level}`);
+                    const card = document.getElementById(`milestone-${level}`);
+
+                    if (rewards.totalPoints >= milestoneThresholds[level]) {
+                        statusEl.textContent = 'Unlocked';
+                        statusEl.className = 'text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700';
+                        certBtn.classList.remove('hidden');
+                        card.classList.add('border-green-200');
+                        card.classList.remove('border-gray-100');
+                    } else {
+                        statusEl.textContent = 'Locked';
+                        statusEl.className = 'text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500';
+                        certBtn.classList.add('hidden');
+                    }
+                });
+
+                // Update points history
+                const historyContainer = document.getElementById('pointsHistory');
+                if (rewards.history && rewards.history.length > 0) {
+                    const actionIcons = {
+                        'report_animal': 'sos',
+                        'donate': 'volunteer_activism',
+                        'adopt_animal': 'pets',
+                        'volunteer': 'group'
+                    };
+                    const actionColors = {
+                        'report_animal': 'text-red-600 bg-red-50',
+                        'donate': 'text-green-600 bg-green-50',
+                        'adopt_animal': 'text-orange-600 bg-orange-50',
+                        'volunteer': 'text-blue-600 bg-blue-50'
+                    };
+
+                    historyContainer.innerHTML = rewards.history.slice(0, 10).map(h => {
+                        const icon = actionIcons[h.action] || 'stars';
+                        const color = actionColors[h.action] || 'text-gray-600 bg-gray-50';
+                        const date = new Date(h.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+                        return `
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-50/50 hover:bg-gray-50 transition">
+                                <div class="w-9 h-9 rounded-lg flex items-center justify-center ${color} flex-shrink-0">
+                                    <span class="material-symbols-outlined text-lg">${icon}</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 truncate">${h.description}</p>
+                                    <p class="text-xs text-gray-400">${date}</p>
+                                </div>
+                                <span class="text-sm font-bold text-green-600 flex-shrink-0">+${h.points}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+            } catch (err) {
+                console.error('Error loading rewards:', err);
+            }
+        }
+
+        function downloadCertificate(milestone) {
+            window.open(`${API_BASE}/api/users/${userId}/certificate/${milestone}`, '_blank');
         }
 
         // ========== REPORT TRACKER ==========
@@ -819,6 +1158,19 @@
             applyTranslations();
             loadAdoptionAnimals();
             loadMyReports();
+            loadRewards();
+
+            // Check for pending reward from report submission
+            const pendingReward = localStorage.getItem('pendingReward');
+            if (pendingReward) {
+                try {
+                    const reward = JSON.parse(pendingReward);
+                    setTimeout(() => {
+                        handleRewardResponse({ reward });
+                    }, 1500);
+                } catch (e) {}
+                localStorage.removeItem('pendingReward');
+            }
         });
     </script>
 </body>

@@ -303,10 +303,25 @@
                     })
                 });
                 if (res.ok) {
+                    const data = await res.json();
                     document.querySelector('#donateModal form').style.display = 'none';
                     document.getElementById('donateSuccess').style.display = 'block';
-                } else { alert('Donation failed.'); }
-            } catch (err) { alert('Server error.'); }
+                    
+                    let downloadBtn = document.getElementById('receiptDownloadBtn');
+                    if (!downloadBtn) {
+                        downloadBtn = document.createElement('a');
+                        downloadBtn.id = 'receiptDownloadBtn';
+                        downloadBtn.target = '_blank';
+                        downloadBtn.className = 'bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-xl font-semibold mt-4 inline-block ml-2';
+                        downloadBtn.textContent = 'Download Receipt';
+                        document.getElementById('donateSuccess').appendChild(downloadBtn);
+                    }
+                    downloadBtn.href = data.receiptUrl || '#';
+                } else { 
+                    const errData = await res.json().catch(() => ({}));
+                    alert('Donation failed: ' + (errData.error || errData.message || res.statusText));
+                }
+            } catch (err) { alert('Server error: ' + err.message); }
         }
 
     </script>
