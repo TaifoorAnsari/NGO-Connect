@@ -22,7 +22,11 @@
             --success: #52B788;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -30,7 +34,15 @@
             color: var(--dark);
         }
 
-        h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Syne', sans-serif;
+        }
+
         .material-symbols-outlined {
             vertical-align: middle;
             line-height: 1;
@@ -47,21 +59,36 @@
             pointer-events: none;
         }
 
-        .bg-blob-1 { top: -200px; right: -200px; }
+        .bg-blob-1 {
+            top: -200px;
+            right: -200px;
+        }
+
         .bg-blob-2 {
-            bottom: -300px; left: -300px;
+            bottom: -300px;
+            left: -300px;
             animation-delay: -10s;
             background: radial-gradient(circle, rgba(78, 205, 196, 0.08) 0%, transparent 70%);
         }
 
         @keyframes morphBlob {
-            0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: rotate(0deg) scale(1); }
-            50% { border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%; transform: rotate(180deg) scale(0.9); }
+
+            0%,
+            100% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                transform: rotate(0deg) scale(1);
+            }
+
+            50% {
+                border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+                transform: rotate(180deg) scale(0.9);
+            }
         }
 
         .card-hover {
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .card-hover:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 60px rgba(217, 74, 43, 0.15);
@@ -70,9 +97,10 @@
         .adopt-card {
             transition: all 0.3s ease;
         }
+
         .adopt-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
         .status-badge {
@@ -82,10 +110,26 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .status-pending { background: #FEF3C7; color: #92400E; }
-        .status-assigned { background: #D1FAE5; color: #065F46; }
-        .status-in-progress { background: #DBEAFE; color: #1E40AF; }
-        .status-completed { background: #E0E7FF; color: #3730A3; }
+
+        .status-pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-assigned {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-in-progress {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .status-completed {
+            background: #E0E7FF;
+            color: #3730A3;
+        }
 
         /* Tracker stepper styles */
         .tracker-step {
@@ -95,6 +139,7 @@
             position: relative;
             flex: 1;
         }
+
         .tracker-dot {
             width: 36px;
             height: 36px;
@@ -110,22 +155,33 @@
             color: #9CA3AF;
             transition: all 0.4s ease;
         }
+
         .tracker-dot.done {
             background: #059669;
             border-color: #059669;
             color: white;
         }
+
         .tracker-dot.active {
             background: white;
             border-color: #D94A2B;
             color: #D94A2B;
-            box-shadow: 0 0 0 6px rgba(217,74,43,0.15);
+            box-shadow: 0 0 0 6px rgba(217, 74, 43, 0.15);
             animation: pulseActive 2s ease-in-out infinite;
         }
+
         @keyframes pulseActive {
-            0%, 100% { box-shadow: 0 0 0 4px rgba(217,74,43,0.1); }
-            50% { box-shadow: 0 0 0 10px rgba(217,74,43,0.2); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 4px rgba(217, 74, 43, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(217, 74, 43, 0.2);
+            }
         }
+
         .tracker-line {
             position: absolute;
             top: 18px;
@@ -136,9 +192,11 @@
             z-index: 1;
             border-radius: 2px;
         }
+
         .tracker-line.done {
             background: #059669;
         }
+
         .tracker-label {
             margin-top: 10px;
             font-size: 12px;
@@ -146,40 +204,62 @@
             color: #9CA3AF;
             text-align: center;
         }
-        .tracker-label.done { color: #059669; }
-        .tracker-label.active { color: #D94A2B; }
+
+        .tracker-label.done {
+            color: #059669;
+        }
+
+        .tracker-label.active {
+            color: #D94A2B;
+        }
 
         .report-card {
             transition: all 0.3s ease;
         }
+
         .report-card:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
+
         .report-detail-toggle {
             cursor: pointer;
             user-select: none;
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .animate-in { animation: fadeInUp 0.6s ease forwards; }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
 
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(45, 49, 66, 0.9);
             backdrop-filter: blur(8px);
             z-index: 1000;
         }
+
         .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .modal-content {
             background: white;
             border-radius: 24px;
@@ -189,9 +269,17 @@
             overflow-y: auto;
             animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         /* Reward Notification Toast */
@@ -203,15 +291,17 @@
             background: white;
             border-radius: 16px;
             padding: 16px 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             border-left: 4px solid #52B788;
             transform: translateX(120%);
             transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             max-width: 360px;
         }
+
         .reward-toast.show {
             transform: translateX(0);
         }
+
         .reward-toast.milestone {
             border-left-color: #FFD700;
         }
@@ -221,6 +311,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .badge-shimmer::after {
             content: '';
             position: absolute;
@@ -228,12 +319,18 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 3s ease-in-out infinite;
         }
+
         @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
         }
     </style>
 </head>
@@ -247,29 +344,36 @@
         <nav class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-xl flex items-center justify-center">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-400 rounded-xl flex items-center justify-center">
                         <span class="text-white font-bold text-xl">N</span>
                     </div>
                     <h1 class="text-2xl font-bold text-gray-800">NGO-Connect</h1>
                 </div>
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="#causes" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.our_causes">Our Causes</a>
-                    <a href="#adoption" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.adopt">Adopt</a>
-                    <a href="#reports" class="text-gray-700 hover:text-red-600 transition font-medium" data-i18n="nav.track_reports">Track Reports</a>
+                    <a href="#causes" class="text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="nav.our_causes">Our Causes</a>
+                    <a href="#adoption" class="text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="nav.adopt">Adopt</a>
+                    <a href="#reports" class="text-gray-700 hover:text-red-600 transition font-medium"
+                        data-i18n="nav.track_reports">Track Reports</a>
                 </div>
                 <div class="flex items-center space-x-4">
                     <button id="langToggleBtn" onclick="toggleLanguage()"
                         class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition font-medium"
                         data-i18n="lang.toggle">
-                        <span class="material-symbols-outlined">language</span> हिंदी
+                        <span class="material-symbols-outlined">language</span>
+                        हिंदी
                     </button>
                     <div class="flex items-center space-x-2">
-                        <div class="w-9 h-9 bg-gradient-to-br from-red-500 to-orange-400 rounded-full flex items-center justify-center">
+                        <div
+                            class="w-9 h-9 bg-gradient-to-br from-red-500 to-orange-400 rounded-full flex items-center justify-center">
                             <span class="text-white font-bold text-sm" id="userAvatar">U</span>
                         </div>
                         <span class="font-semibold text-gray-800" id="userName">User</span>
                     </div>
-                    <button onclick="logout()" class="text-gray-500 hover:text-red-600 transition text-sm font-medium" data-i18n="nav.logout">Logout</button>
+                    <button onclick="logout()" class="text-gray-500 hover:text-red-600 transition text-sm font-medium"
+                        data-i18n="nav.logout">Logout</button>
                 </div>
             </div>
         </nav>
@@ -280,10 +384,12 @@
         <div class="container mx-auto max-w-6xl">
             <div class="animate-in">
                 <h2 class="text-4xl font-bold text-gray-900 mb-2">
-                    <span data-i18n="welcome.title">Welcome back,</span> 
-                    <span id="welcomeName" class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">User</span>!
+                    <span data-i18n="welcome.title">Welcome back,</span>
+                    <span id="welcomeName"
+                        class="bg-gradient-to-r from-red-500 to-orange-400 bg-clip-text text-transparent">User</span>!
                 </h2>
-                <p class="text-lg text-gray-600" data-i18n="welcome.subtitle">Make a difference today — explore causes, adopt animals, or report emergencies.</p>
+                <p class="text-lg text-gray-600" data-i18n="welcome.subtitle">Make a difference today — explore causes,
+                    adopt animals, or report emergencies.</p>
             </div>
         </div>
     </section>
@@ -292,13 +398,19 @@
     <section class="relative z-10 pb-8 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button onclick="window.location.href='index.html'" class="bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg flex items-center justify-center gap-3" data-i18n="action.report">
+                <button onclick="window.location.href='index.html'"
+                    class="bg-red-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:bg-red-700 transition shadow-lg flex items-center justify-center gap-3"
+                    data-i18n="action.report">
                     <span class="material-symbols-outlined">sos</span> Report Emergency
                 </button>
-                <a href="#adoption" class="bg-white border-2 border-orange-300 text-orange-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-orange-500 hover:bg-orange-50 transition shadow-sm flex items-center justify-center gap-3" data-i18n="action.adopt">
+                <a href="#adoption"
+                    class="bg-white border-2 border-orange-300 text-orange-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-orange-500 hover:bg-orange-50 transition shadow-sm flex items-center justify-center gap-3"
+                    data-i18n="action.adopt">
                     <span class="material-symbols-outlined">pets</span> Adopt a Pet
                 </a>
-                <a href="#reports" class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3" data-i18n="action.track">
+                <a href="#reports"
+                    class="bg-white border-2 border-teal-300 text-teal-700 px-6 py-4 rounded-2xl font-bold text-lg hover:border-teal-500 hover:bg-teal-50 transition shadow-sm flex items-center justify-center gap-3"
+                    data-i18n="action.track">
                     <span class="material-symbols-outlined">assignment</span> Track Reports
                 </a>
             </div>
@@ -320,7 +432,8 @@
     <section id="rewards" class="relative z-10 pb-8 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-8">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3"><span class="material-symbols-outlined text-4xl">military_tech</span> Rewards & Badges</h3>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3"><span
+                        class="material-symbols-outlined text-4xl">military_tech</span> Rewards & Badges</h3>
                 <p class="text-lg text-gray-600">Earn points for making a positive impact</p>
             </div>
 
@@ -328,16 +441,19 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Total Points Card -->
                 <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center badge-shimmer">
+                    <div
+                        class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center badge-shimmer">
                         <span class="material-symbols-outlined text-3xl text-white">stars</span>
                     </div>
-                    <p class="text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent" id="rewardTotalPoints">0</p>
+                    <p class="text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
+                        id="rewardTotalPoints">0</p>
                     <p class="text-gray-500 font-semibold text-sm mt-1">Total Points</p>
                 </div>
 
                 <!-- Current Badge Card -->
                 <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" id="currentBadgeIcon" style="background: linear-gradient(135deg, #E5E7EB, #D1D5DB)">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                        id="currentBadgeIcon" style="background: linear-gradient(135deg, #E5E7EB, #D1D5DB)">
                         <span class="material-symbols-outlined text-3xl text-white">military_tech</span>
                     </div>
                     <p class="text-2xl font-extrabold text-gray-900" id="currentBadgeLevel">No Badge</p>
@@ -346,14 +462,16 @@
 
                 <!-- Next Milestone Card -->
                 <div class="bg-white rounded-3xl p-6 shadow-lg border border-gray-100 text-center">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center">
+                    <div
+                        class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center">
                         <span class="material-symbols-outlined text-3xl text-white">flag</span>
                     </div>
                     <p class="text-2xl font-extrabold text-gray-900" id="nextMilestoneText">Bronze</p>
                     <p class="text-gray-500 font-semibold text-sm mt-1" id="nextMilestonePoints">100 pts to go</p>
                     <!-- Progress Bar -->
                     <div class="mt-3 bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-1000" id="milestoneProgress" style="width: 0%; background: linear-gradient(90deg, #4ECDC4, #2ECC71)"></div>
+                        <div class="h-full rounded-full transition-all duration-1000" id="milestoneProgress"
+                            style="width: 0%; background: linear-gradient(90deg, #4ECDC4, #2ECC71)"></div>
                     </div>
                 </div>
             </div>
@@ -361,9 +479,11 @@
             <!-- Milestones -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Bronze -->
-                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Bronze">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden"
+                    id="milestone-Bronze">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #CD7F32, #A0522D)">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style="background: linear-gradient(135deg, #CD7F32, #A0522D)">
                             <span class="material-symbols-outlined text-xl text-white">military_tech</span>
                         </div>
                         <div>
@@ -372,16 +492,21 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Bronze">Locked</span>
-                        <button onclick="downloadCertificate('Bronze')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Bronze">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500"
+                            id="badge-status-Bronze">Locked</span>
+                        <button onclick="downloadCertificate('Bronze')"
+                            class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition"
+                            id="cert-btn-Bronze">
                             <span class="material-symbols-outlined text-xs">download</span> Certificate
                         </button>
                     </div>
                 </div>
                 <!-- Silver -->
-                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Silver">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden"
+                    id="milestone-Silver">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8)">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8)">
                             <span class="material-symbols-outlined text-xl text-white">military_tech</span>
                         </div>
                         <div>
@@ -390,16 +515,21 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Silver">Locked</span>
-                        <button onclick="downloadCertificate('Silver')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Silver">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500"
+                            id="badge-status-Silver">Locked</span>
+                        <button onclick="downloadCertificate('Silver')"
+                            class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition"
+                            id="cert-btn-Silver">
                             <span class="material-symbols-outlined text-xs">download</span> Certificate
                         </button>
                     </div>
                 </div>
                 <!-- Gold -->
-                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden" id="milestone-Gold">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-100 relative overflow-hidden"
+                    id="milestone-Gold">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #FFD700, #DAA520)">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style="background: linear-gradient(135deg, #FFD700, #DAA520)">
                             <span class="material-symbols-outlined text-xl text-white">military_tech</span>
                         </div>
                         <div>
@@ -408,8 +538,11 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500" id="badge-status-Gold">Locked</span>
-                        <button onclick="downloadCertificate('Gold')" class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition" id="cert-btn-Gold">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500"
+                            id="badge-status-Gold">Locked</span>
+                        <button onclick="downloadCertificate('Gold')"
+                            class="hidden ml-auto text-xs font-semibold px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400 text-white hover:shadow-md transition"
+                            id="cert-btn-Gold">
                             <span class="material-symbols-outlined text-xs">download</span> Certificate
                         </button>
                     </div>
@@ -418,7 +551,8 @@
 
             <!-- Points Earning Guide -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
-                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">info</span> How to Earn Points</p>
+                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">info</span> How
+                    to Earn Points</p>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="text-center p-3 bg-red-50 rounded-xl">
                         <span class="material-symbols-outlined text-2xl text-red-600">sos</span>
@@ -445,7 +579,8 @@
 
             <!-- Recent Points History -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">history</span> Points History</p>
+                <p class="font-bold text-gray-900 mb-4"><span class="material-symbols-outlined text-sm">history</span>
+                    Points History</p>
                 <div id="pointsHistory" class="space-y-3">
                     <p class="text-gray-400 text-center py-4">No points earned yet. Start making an impact!</p>
                 </div>
@@ -458,16 +593,41 @@
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
                 <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="causes.title">Our Causes</h3>
-                <p class="text-lg text-gray-600" data-i18n="causes.subtitle">Explore and support different NGO categories</p>
+                <p class="text-lg text-gray-600" data-i18n="causes.subtitle">Explore and support different NGO
+                    categories</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Animal Welfare -->
-                <a href="ngo-animal.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
+                <a href="ngo-animal.html"
+                    class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-red-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl text-red-600">pets</span>
+                        <!-- <span class="material-symbols-outlined text-4xl text-red-600">pets</span> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 48 48">
+                            <title xmlns="">animal-paw-print-48</title>
+                            <g fill="none">
+                                <path fill="url(#SVGv7PqEecP)"
+                                    d="M10 34c0-7.732 6.268-14 14-14s14 6.268 14 14q0 .255-.01.508c-.09 2.551-1.478 4.464-3.353 5.694C32.789 41.415 30.433 42 28.169 42h-8.338c-2.264 0-4.62-.585-6.468-1.798c-1.875-1.23-3.263-3.143-3.354-5.694Q10 34.255 10 34" />
+                                <path fill="url(#SVGXzjAkerA)"
+                                    d="M18.25 6c-2.84 0-4.75 2.7-4.75 5.5s1.91 5.5 4.75 5.5S23 14.3 23 11.5S21.09 6 18.25 6M3 17.5C3 14.7 4.91 12 7.75 12s4.75 2.7 4.75 5.5S10.59 23 7.75 23S3 20.3 3 17.5m22.5-6c0-2.8 1.91-5.5 4.75-5.5S35 8.7 35 11.5S33.09 17 30.25 17s-4.75-2.7-4.75-5.5m10 6c0-2.8 1.91-5.5 4.75-5.5S45 14.7 45 17.5S43.09 23 40.25 23s-4.75-2.7-4.75-5.5" />
+                                <defs>
+                                    <radialGradient id="SVGXzjAkerA" cx="0" cy="0" r="1"
+                                        gradientTransform="matrix(0 -21.8571 33.6 0 25.167 24.214)"
+                                        gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#eb4824" />
+                                        <stop offset="1" stop-color="#ff921f" />
+                                    </radialGradient>
+                                    <linearGradient id="SVGv7PqEecP" x1="16.659" x2="26.532" y1="22.925" y2="42.991"
+                                        gradientUnits="userSpaceOnUse">
+                                        <stop offset=".125" stop-color="#ff921f" />
+                                        <stop offset="1" stop-color="#eb4824" />
+                                    </linearGradient>
+                                </defs>
+                            </g>
+                        </svg>
                     </div>
-                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.animal_title">Animal Welfare</h4>
+                    <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.animal_title">Animal Welfare
+                    </h4>
                     <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.animal_desc">
                         Rescue injured animals, adopt pets, and support animal shelters with your donations.
                     </p>
@@ -477,9 +637,22 @@
                 </a>
 
                 <!-- Elderly Care -->
-                <a href="ngo-elderly.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
+                <a href="ngo-elderly.html"
+                    class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-orange-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl text-orange-600">home</span>
+                        <!-- <span class="material-symbols-outlined text-4xl text-orange-600">home</span> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 32 32"
+                            fill="#d86526">
+                            <title xmlns="" fill="#d86526">person-in-bed</title>
+                            <g fill="#d86526">
+                                <path
+                                    d="M12.142 12.362c.066.023.1.095.076.16a.68.68 0 0 1-.873.406a.126.126 0 0 1 .09-.236a.427.427 0 0 0 .546-.254a.126.126 0 0 1 .161-.077M9.79 12.11c.26.15.59.09.78-.14c.19-.21.2-.53.03-.77c-.03-.04-.09-.05-.14-.02c-.04.03-.05.1-.02.15c.11.15.1.36-.03.51s-.35.19-.52.09c-.05-.03-.11-.01-.14.04s-.01.11.04.14m.065-1.345a.134.134 0 0 1 0 .19a1.08 1.08 0 0 0-.31.654c-.004.076-.053.145-.135.145a.134.134 0 0 1-.134-.134c0-.08.01-.16.049-.287a1.35 1.35 0 0 1 .34-.568a.134.134 0 0 1 .19 0"
+                                    fill="#d86526" />
+                                <path
+                                    d="M8.525 9.176q.298-.063.603-.062l-.003.008a2.84 2.84 0 0 1 1.76.6l.393.3q.162.02.326.024c.336-.011.666.095.933.3a1.42 1.42 0 0 1 .522 1.1A2.4 2.4 0 0 1 13.978 13H27a3 3 0 0 1 3 3v6H11v-3.995H4.08q-.04 0-.08-.003V21h6v2h20v4h-1.98v3H25v-3H7v3H3.99v-3H2V12a1 1 0 1 1 2 0v1.155a2.3 2.3 0 0 1 1.082-.387c.124-.569.508-1.099.95-1.49q.034-.048.07-.093l.75-.959q.089-.115.188-.219c.072-.14.173-.304.33-.507c.191-.243.63-.569 1.155-.324m.155 2.264c-.98 1.26-.21 1.85-.21 1.85s-.036.028-.061.09a.764.764 0 0 0 .612 1.14q.19.18.459.39c.294.228.392.435.388.62l.002.001q.234.07.478.069a3.2 3.2 0 0 0 1.194-.35a3.6 3.6 0 0 0 1.038-.88c.419-.54.506-.977.38-1.37h.006c-.136-.428-.525-.803-1.012-1.199a.5.5 0 0 0-.03-.67a.5.5 0 0 0-.346-.089a4 4 0 0 1-.684-.071h-.014l-.6-.458a1.86 1.86 0 0 0-1.017-.395c.021.343-.15.765-.583 1.322m-.127 4.614l-.333-.143l-.758-.299l-.092-.036l-.52-.205l-.134-.053l-.114-.089a3 3 0 0 1-.276-.245a10 10 0 0 1-.436-.324c-.367-.284-.6-.587-.726-.895A1.283 1.283 0 0 0 4 15.045v1.88c0 .031.025.063.055.075H11v-.495a4 4 0 0 1-.655.095q-.391 0-.766-.111l-.055-.017l-.052-.022l-.163-.07c-.271.192-.685 0-.756-.326"
+                                    fill="#d86526" />
+                            </g>
+                        </svg>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.elderly_title">Elderly Care</h4>
                     <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.elderly_desc">
@@ -491,9 +664,29 @@
                 </a>
 
                 <!-- Education -->
-                <a href="ngo-education.html" class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
+                <a href="ngo-education.html"
+                    class="card-hover bg-white rounded-3xl p-8 shadow-lg border-2 border-transparent hover:border-teal-200 block cursor-pointer">
                     <div class="w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-4xl text-teal-600">menu_book</span>
+                        <!-- <span class="material-symbols-outlined text-4xl text-teal-600">menu_book</span> -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 40 40">
+                            <title xmlns="">education-degree</title>
+                            <g fill="none" stroke-miterlimit="10">
+                                <path fill="#ff8c36" stroke="#231f20"
+                                    d="M25.29 5.18c-.43-1.41-3.94-1.87-6-2a12.54 12.54 0 0 0-5.69 1.2a12.64 12.64 0 0 0-5.42-2.11C6.12 2.11 2.58 2 1.94 3.33C1.36 4 1 7.62.77 10.64s-.47 6.68 0 7.41c.42 1.41 3.48.45 6.09.66c1.123.122 2.236.326 3.33.61c.16 1.07 1.38 1.31 2.11 1.37s2 0 2.3-1a25 25 0 0 1 3.39-.1c2.83.22 5.48 1.63 6.12.31c.59-.64.93-4.29 1.17-7.31s.48-6.68.01-7.41Z" />
+                                <path stroke="#231f20" stroke-linecap="round"
+                                    d="M10.14 6.54a24.3 24.3 0 0 0-5.72-.45m5.4 4.53a25.5 25.5 0 0 0-5.72-.45m5.38 4.71a25 25 0 0 0-5.72-.46M22.4 7.51a24.4 24.4 0 0 0-5.72-.45m5.4 4.54a25 25 0 0 0-5.72-.46m5.38 4.71a25 25 0 0 0-5.74-.46M13.61 4.35l-.91 11.44" />
+                                <path stroke="#fff" stroke-linecap="round" d="M22.36 5C24 5.43 24 5.88 24 6.63" />
+                                <path fill="#903d00" stroke="#231f20"
+                                    d="M30.85 20.38c-2.56-1-6.14-2.14-7.82-1.61c-1.18.14-4.58 2-6.85 3.72s-4.34 4.08-4.2 4.73c0 0 .17 1.57.34 2.79A12.2 12.2 0 0 0 13 33a1.13 1.13 0 0 0 2-.29a11.6 11.6 0 0 0-.21-3.07c0-.16-.17-.08 1.81.72c.46 2.73.89 4.53 1.43 5.32c1 2.53 5.34 2.25 7.83 1.89s6.72-1.3 7-4c.29-.91.2-2.76-.12-5.52c2-1.65 3.66-3.61 3.53-4.19c.32-1.04-2.87-2.49-5.42-3.48Z" />
+                                <path stroke="#231f20" stroke-linecap="round"
+                                    d="M19.71 31c2.06.65 4.2 1.12 5.39.75a16.9 16.9 0 0 0 4.75-2.28" />
+                                <path fill="#fff" stroke="#231f20"
+                                    d="M22.008 25.42a.76.76 0 0 0 .218.421c.122.126.29.232.494.313s.44.133.694.156c.255.023.523.015.79-.023a3.4 3.4 0 0 0 .763-.2c.238-.093.45-.21.623-.345q.261-.204.386-.44a.76.76 0 0 0 .09-.465a.76.76 0 0 0-.218-.42a1.4 1.4 0 0 0-.494-.313a2.5 2.5 0 0 0-.694-.157a3.4 3.4 0 0 0-.789.024a3.4 3.4 0 0 0-.764.2c-.238.093-.45.21-.622.345a1.4 1.4 0 0 0-.386.439a.76.76 0 0 0-.09.465Z" />
+                                <path stroke="#fff" stroke-linecap="round" d="M24.81 20.47a9.2 9.2 0 0 1 3.13.73" />
+                                <path fill="#ff5e00" stroke="#231f20"
+                                    d="M32.53 3.33c.94.26 2.33.67.77 4.49s-2.5 3.59-3 3.46s-1.41-.38-.77-4.49s2.06-3.72 3-3.46Zm-4.46 10.65a1.46 1.46 0 1 0 2.92 0a1.46 1.46 0 0 0-2.92 0Zm10.66-5.25c.64.43 1.58 1.09-.54 3.57s-2.77 2.08-3.09 1.86s-1-.64.54-3.56s2.45-2.29 3.09-1.87Zm-6.11 7.61a1.15 1.15 0 1 0 2.3 0a1.15 1.15 0 0 0-2.3 0Z" />
+                            </g>
+                        </svg>
                     </div>
                     <h4 class="text-2xl font-bold text-gray-900 mb-3" data-i18n="causes.education_title">Education</h4>
                     <p class="text-gray-600 mb-6 leading-relaxed" data-i18n="causes.education_desc">
@@ -511,22 +704,38 @@
     <section id="adoption" class="relative z-10 py-12 px-6">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="adoption.title"><span class="material-symbols-outlined text-4xl">pets</span> Adopt a Pet</h3>
-                <p class="text-lg text-gray-600" data-i18n="adoption.subtitle">Give a loving home to these adorable animals</p>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="adoption.title"><span
+                        class="material-symbols-outlined text-4xl">pets</span> Adopt a Pet</h3>
+                <p class="text-lg text-gray-600" data-i18n="adoption.subtitle">Give a loving home to these adorable
+                    animals</p>
             </div>
 
             <!-- Filter -->
             <div class="flex flex-wrap gap-3 mb-8 justify-center">
-                <button onclick="filterAnimals('')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition active" data-i18n="adoption.all">All</button>
-                <button onclick="filterAnimals('dog')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.dogs"><span class="material-symbols-outlined text-sm">pets</span> Dogs</button>
-                <button onclick="filterAnimals('cat')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.cats"><span class="material-symbols-outlined text-sm">pets</span> Cats</button>
-                <button onclick="filterAnimals('bird')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.birds"><span class="material-symbols-outlined text-sm">flutter_dash</span> Birds</button>
-                <button onclick="filterAnimals('rabbit')" class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition" data-i18n="adoption.rabbits"><span class="material-symbols-outlined text-sm">cruelty_free</span> Rabbits</button>
+                <button onclick="filterAnimals('')"
+                    class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition active"
+                    data-i18n="adoption.all">All</button>
+                <button onclick="filterAnimals('dog')"
+                    class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition"
+                    data-i18n="adoption.dogs"><span class="material-symbols-outlined text-sm">pets</span> Dogs</button>
+                <button onclick="filterAnimals('cat')"
+                    class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition"
+                    data-i18n="adoption.cats"><span class="material-symbols-outlined text-sm">pets</span> Cats</button>
+                <button onclick="filterAnimals('bird')"
+                    class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition"
+                    data-i18n="adoption.birds"><span class="material-symbols-outlined text-sm">flutter_dash</span>
+                    Birds</button>
+                <button onclick="filterAnimals('rabbit')"
+                    class="filter-btn px-5 py-2 rounded-full font-semibold text-sm border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 transition"
+                    data-i18n="adoption.rabbits"><span class="material-symbols-outlined text-sm">cruelty_free</span>
+                    Rabbits</button>
             </div>
 
             <div id="adoptionGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div class="col-span-full text-center py-12">
-                    <div class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin"></div>
+                    <div
+                        class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin">
+                    </div>
                     <p class="text-gray-600 mt-4">Loading available pets...</p>
                 </div>
             </div>
@@ -543,8 +752,10 @@
     <section id="reports" class="relative z-10 py-12 px-6 bg-white/50">
         <div class="container mx-auto max-w-6xl">
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="reports.title"><span class="material-symbols-outlined text-4xl">assignment</span> Track Your Reports</h3>
-                <p class="text-lg text-gray-600" data-i18n="reports.subtitle">Follow every step — from reporting to resolution</p>
+                <h3 class="text-4xl font-bold text-gray-900 mb-3" data-i18n="reports.title"><span
+                        class="material-symbols-outlined text-4xl">assignment</span> Track Your Reports</h3>
+                <p class="text-lg text-gray-600" data-i18n="reports.subtitle">Follow every step — from reporting to
+                    resolution</p>
             </div>
 
             <!-- Report Stats Bar -->
@@ -569,7 +780,9 @@
 
             <div id="reportsContainer" class="space-y-6">
                 <div class="text-center py-12">
-                    <div class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin"></div>
+                    <div
+                        class="inline-block w-8 h-8 border-4 border-gray-300 border-t-red-500 rounded-full animate-spin">
+                    </div>
                     <p class="text-gray-600 mt-4">Loading your reports...</p>
                 </div>
             </div>
@@ -578,7 +791,8 @@
                 <p class="text-5xl mb-4"><span class="material-symbols-outlined text-5xl">assignment_late</span></p>
                 <p class="text-xl font-semibold text-gray-900 mb-2">No reports yet</p>
                 <p class="text-gray-600">When you report an injured animal, you can track its progress here.</p>
-                <a href="index.html" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
+                <a href="index.html"
+                    class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition">
                     Report an Emergency <span class="material-symbols-outlined">sos</span>
                 </a>
             </div>
@@ -588,7 +802,8 @@
     <!-- Footer -->
     <footer class="relative z-10 bg-gray-900 text-white py-10 px-6">
         <div class="container mx-auto max-w-6xl text-center">
-            <p class="text-gray-400">&copy; 2024 NGO-Connect. All rights reserved. Built with <span class="material-symbols-outlined text-sm">favorite</span> for making a difference.</p>
+            <p class="text-gray-400">&copy; 2024 NGO-Connect. All rights reserved. Built with <span
+                    class="material-symbols-outlined text-sm">favorite</span> for making a difference.</p>
         </div>
     </footer>
 
@@ -896,10 +1111,10 @@
         // ========== REPORT TRACKER ==========
         // Status progression: pending → assigned → in-progress → completed
         const TRACKING_STEPS = [
-            { key: 'pending',     icon: '<span class="material-symbols-outlined">assignment</span>', label: t('reports.step_reported'),   desc: 'Your report has been submitted' },
-            { key: 'assigned',    icon: '<span class="material-symbols-outlined">check_circle</span>', label: t('reports.step_accepted'),   desc: 'An NGO has accepted your report' },
+            { key: 'pending', icon: '<span class="material-symbols-outlined">assignment</span>', label: t('reports.step_reported'), desc: 'Your report has been submitted' },
+            { key: 'assigned', icon: '<span class="material-symbols-outlined">check_circle</span>', label: t('reports.step_accepted'), desc: 'An NGO has accepted your report' },
             { key: 'in-progress', icon: '<span class="material-symbols-outlined">engineering</span>', label: t('reports.step_working'), desc: 'The NGO is working on rescue' },
-            { key: 'completed',   icon: '<span class="material-symbols-outlined">celebration</span>', label: t('reports.step_resolved'),   desc: 'The rescue is complete' }
+            { key: 'completed', icon: '<span class="material-symbols-outlined">celebration</span>', label: t('reports.step_resolved'), desc: 'The rescue is complete' }
         ];
 
         function getStepIndex(status) {
@@ -990,18 +1205,16 @@
                         <!-- Current Status Detail -->
                         <div class="px-6 py-4">
                             ${!isCancelled ? `
-                            <div class="bg-gradient-to-r ${
-                                report.status === 'completed' ? 'from-green-50 to-emerald-50 border-green-200' :
-                                report.status === 'in-progress' ? 'from-blue-50 to-sky-50 border-blue-200' :
-                                report.status === 'assigned' ? 'from-teal-50 to-cyan-50 border-teal-200' :
+                            <div class="bg-gradient-to-r ${report.status === 'completed' ? 'from-green-50 to-emerald-50 border-green-200' :
+                        report.status === 'in-progress' ? 'from-blue-50 to-sky-50 border-blue-200' :
+                            report.status === 'assigned' ? 'from-teal-50 to-cyan-50 border-teal-200' :
                                 'from-yellow-50 to-amber-50 border-yellow-200'
-                            } rounded-xl p-4 border">
-                                <p class="text-sm font-bold ${
-                                    report.status === 'completed' ? 'text-green-800' :
-                                    report.status === 'in-progress' ? 'text-blue-800' :
-                                    report.status === 'assigned' ? 'text-teal-800' :
-                                    'text-yellow-800'
-                                } mb-1">${TRACKING_STEPS[currentIdx].icon} ${TRACKING_STEPS[currentIdx].desc}</p>
+                    } rounded-xl p-4 border">
+                                <p class="text-sm font-bold ${report.status === 'completed' ? 'text-green-800' :
+                        report.status === 'in-progress' ? 'text-blue-800' :
+                            report.status === 'assigned' ? 'text-teal-800' :
+                                'text-yellow-800'
+                    } mb-1">${TRACKING_STEPS[currentIdx].icon} ${TRACKING_STEPS[currentIdx].desc}</p>
                                 ${report.assignedNGOName ? `<p class="text-sm text-gray-700"><span class="material-symbols-outlined text-sm">domain</span> <strong>${report.assignedNGOName}</strong> is handling this report</p>` : ''}
                                 <p class="text-xs text-gray-500 mt-2">Last updated: ${updatedDate}</p>
                             </div>` : `
@@ -1027,7 +1240,7 @@
                             <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 mt-2">
                                 <p class="text-sm font-bold text-gray-800 mb-2">⭐ Rate your experience with ${report.assignedNGOName}</p>
                                 <div class="flex items-center gap-2 mb-3" id="rating-stars-${report.reportId}">
-                                    ${[1,2,3,4,5].map(star => `
+                                    ${[1, 2, 3, 4, 5].map(star => `
                                         <button onclick="setRating('${report.reportId}', ${star})" class="text-2xl text-gray-300 hover:text-yellow-400 focus:text-yellow-400 transition" id="star-${report.reportId}-${star}">★</button>
                                     `).join('')}
                                 </div>
@@ -1095,7 +1308,7 @@
         }
 
         // Click outside modal to close
-        window.onclick = function(e) {
+        window.onclick = function (e) {
             if (e.target.id === 'adoptModal') closeAdoptModal();
         }
 
@@ -1117,7 +1330,7 @@
         async function submitRating(ngoId, reportId) {
             const score = document.getElementById(`score-${reportId}`).value;
             const review = document.getElementById(`review-${reportId}`).value;
-            
+
             if (score == 0) {
                 alert('Please select a star rating first!');
                 return;
@@ -1168,7 +1381,7 @@
                     setTimeout(() => {
                         handleRewardResponse({ reward });
                     }, 1500);
-                } catch (e) {}
+                } catch (e) { }
                 localStorage.removeItem('pendingReward');
             }
         });
