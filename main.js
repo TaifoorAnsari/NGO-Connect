@@ -1,6 +1,6 @@
 // NGO-Connect - Main JavaScript File
 console.log('✅ main.js is loading...');
-const API_BASE = window.location.origin;
+const API_BASE = "https://ngo-backend-u6a6.onrender.com";
 
 // Global variables
 let currentLocation = null;
